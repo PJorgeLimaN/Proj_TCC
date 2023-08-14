@@ -20,3 +20,14 @@ model labs {
   lab_name String @db.VarChar(45)
   maqs     Int
 }
+
+// Isso vai auxiliar em gerar o banco de dados no local, se tudo der certo claro 
+// npx prisma init e npx prisma generate são os iniciaism verei a documentação depois para saber qual a ordem correta
+// npx prisma db push vai gerar um banco de dados com as tabelas descritas acima, vazias claro, mas é tudo que necessitamos
+// npx prisma db pull é para caso seja feito alguma modificação diretamente no banco de dados, daí ele atualiza aqui com as novas informações do banco
+// De momento só isso, lembrar de dar npm run dev para iniciar o servidor.
+// Depois eu coloco aqui instruções completas de como rodar o programa
+// 
+//
+//
+//
