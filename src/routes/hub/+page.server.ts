@@ -11,22 +11,30 @@ export const actions = {
         const maq = data.get("maq_id");
         const desc = data.get("error");
 
+        console.log(lab)
         const prisma = new PrismaClient();
 
         if(!lab || !maq || !desc) return;
-        const qtMaq = prisma.labs.findUnique({
+        const qtMaq = await prisma.labs.findUnique({
             where: {
                 lab_id: +lab, 
             },
+            select: {
+                maqs: true,
+            },
         })
+        if(!qtMaq) return;
+        console.log(qtMaq);
 
-        if((+maq < 0 ) || (+maq > +qtMaq)){
-            return;
+        if((+maq < 0 ) || (+maq > qtMaq?.maqs)){
+            //alert("O laboratório escolhido possui somente "+qtMaq+" maquinas.");
+
+            return {status: "Error", qtMaq: qtMaq.maqs, lab: lab, maq: maq};
         }
         //console.log(typeof(lab));
         const erro = await prisma.errors.create({
             data : {
-                lab: lab.toString(),
+                lab_id: +lab,
                 error_maq: +maq,
                 description: desc.toString(), 
             }
@@ -78,21 +86,24 @@ export const actions = {
 
         const id = data.get("id");
         if(!id) return;
-
+        console.log(id);
         const delLab = await prisma.labs.delete({
             where: {
                 lab_id: +id,
             }
         })
+        console.log(delLab);
     }
 
 }satisfies Actions;
 
-export async function load({params}) {
+
+
+export async function load({}) {
     const prisma = new PrismaClient();
-    const data = await prisma.errors.findMany();
+    const errData = await prisma.errors.findMany({include:{labs:true}});
     const labData = await prisma.labs.findMany();
-    return {data, labData
+    return {errData, labData
         
     }
 }

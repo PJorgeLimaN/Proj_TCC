@@ -11,23 +11,36 @@ model errors {
   error_id    Int    @id @default(autoincrement())
   description String @db.VarChar(500)
   error_maq   Int
-  lab         String @db.VarChar(45)
+  lab_id      Int
+  isFixed     Int    @default(0) @db.TinyInt
+  labs        labs   @relation(fields: [lab_id], references: [lab_id], onDelete: Cascade, onUpdate: NoAction, map: "lab_id")
+
+  @@index([lab_id], map: "lab_id_idx")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model labs {
-  lab_id   Int    @id @default(autoincrement())
-  lab_name String @db.VarChar(45)
+  lab_id   Int      @id @default(autoincrement())
+  lab_name String   @db.VarChar(45)
   maqs     Int
+  errors   errors[]
 }
 
-// Isso vai auxiliar em gerar o banco de dados no local, se tudo der certo claro 
-// npx prisma init e npx prisma generate são os iniciaism verei a documentação depois para saber qual a ordem correta
-// npx prisma db push vai gerar um banco de dados com as tabelas descritas acima, vazias claro, mas é tudo que necessitamos
-// npx prisma db pull é para caso seja feito alguma modificação diretamente no banco de dados, daí ele atualiza aqui com as novas informações do banco
-// De momento só isso, lembrar de dar npm run dev para iniciar o servidor.
-// Depois eu coloco aqui instruções completas de como rodar o programa
-// 
-//
-//
-//
+model user_types {
+  type_id   Int     @id @unique(map: "typeId_UNIQUE") @default(autoincrement())
+  type_name String  @db.VarChar(45)
+  type_desc String? @db.VarChar(200)
+  users     users[]
+}
+
+model users {
+  user_id      Int        @id @unique(map: "user_id_UNIQUE") @default(autoincrement())
+  user_type    Int
+  user_name    String     @db.VarChar(45)
+  user_pass    String     @db.VarChar(45)
+  user_desc    String?    @db.VarChar(200)
+  user_created DateTime   @db.DateTime(0)
+  user_types   user_types @relation(fields: [user_type], references: [type_id], onDelete: Cascade, map: "type_id")
+
+  @@index([user_type], map: "type_id_idx")
+}
