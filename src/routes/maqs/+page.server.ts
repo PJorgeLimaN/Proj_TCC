@@ -1,9 +1,11 @@
 import type { Actions } from "@sveltejs/kit";
 import {Prisma, PrismaClient} from '@prisma/client'
 
+const prisma = new PrismaClient();
+
 export const actions = {
 
-    /* addErr: async (event) => {
+    addErr: async (event) => {
         const data = await event.request.formData();
         //console.log(data);
 
@@ -12,7 +14,7 @@ export const actions = {
         const desc = data.get("error");
 
         //console.log(lab)
-        const prisma = new PrismaClient();
+        
 
         if(!lab || !maq || !desc) return;
         const qtMaq = await prisma.labs.findUnique({
@@ -21,6 +23,7 @@ export const actions = {
             },
             select: {
                 maqs: true,
+                lab_name: true
             },
         })
         if(!qtMaq) return;
@@ -29,7 +32,9 @@ export const actions = {
         if((+maq < 0 ) || (+maq > qtMaq?.maqs)){
             //alert("O laboratório escolhido possui somente "+qtMaq+" maquinas.");
 
-            return {status: "Error", qtMaq: qtMaq.maqs, lab: lab, maq: maq};
+            return {
+                message: "O laboratório escolhido ("+qtMaq?.lab_name+") possui somente "+qtMaq?.maqs+" maquinas."
+            };
         }
         //console.log(typeof(lab));
         const erro = await prisma.errors.create({
@@ -42,28 +47,31 @@ export const actions = {
         //console.log(erro);
     },
 
-    addLab: async (event) => {
+
+    updateEntry: async (event) => {
         const data = await event.request.formData();
-        //console.log(data);
 
-        const lab = data.get("lab_nome");
-        const maq = data.get("maq_qt");
+        const id = data.get("erroId");
+        const maq = data.get("maqN");
+        const desc = data.get("desc");
 
-        const prisma = new PrismaClient();
+        if(!id || !maq || !desc) {
+            return{
+                message: "Dados Inválidos",
+            }
+        }
 
-        if(!lab || !maq) return;
-
-        const labs = await prisma.labs.create({
-            data : {
-                lab_name: lab.toString(),
-                maqs: +maq,
+        const upErr = await prisma.errors.update({
+            where: {
+                error_id: +id,
+            },
+            data: {
+                description: desc.toString(),
             }
         })
-        //console.log(labs);
     },
 
     deleteEntry: async (event) => {
-        const prisma = new PrismaClient();
         const data = await event.request.formData();
 
         const id = data.get("id");
@@ -79,39 +87,6 @@ export const actions = {
         console.log(delErr);
 
     },
-
-    deleteLab: async (event) => {
-        const prisma = new PrismaClient();
-        const data = await event.request.formData();
-
-        const id = data.get("id");
-        if(!id) return;
-        //console.log(id);
-        const delLab = await prisma.labs.delete({
-            where: {
-                lab_id: +id,
-            }
-        })
-        //console.log(delLab);
-    },
-
-    updateLab: async (event) => {
-        const prisma = new PrismaClient();
-        const data = await event.request.formData();
-
-        const id = data.get("id");
-        const maqs = data.get("maq_qt");
-        if(!id || !maqs) return;
-
-        const upLab = await prisma.labs.update({
-            where: {
-                lab_id: +id,
-            },
-            data: {
-                maqs: +maqs,
-            },
-        })
-    }, */
 
 
     /* Criar Solução

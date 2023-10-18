@@ -1,30 +1,15 @@
-<script lang="ts">
-  
-	import { linear } from 'svelte/easing';
 
-    export let data;
-    export let form;
-    $: selLab=0;
-    /* console.log(form); */
-    console.log(data.errData);
-    //console.log(data.data);
-    
-
-    if(form?.status == "Error"){
-      //alert(`O Lab ${form.lab} só possui ${form.qtMaq}. A máquina ${form.maq} não é valida.`)
-    }
-    
-</script>
+<header>
+  <nav>
+    <a href="./labs">Laboratórios</a>
+    <a href="./maqs">Máquinas</a>
+  </nav>
+</header>
 
 <body>
 
-<section class="insert">
 
-  {#if form?.status == "Error"}
-    <h2>O Lab {form.lab} só possui {form.qtMaq} máquinas. A máquina {form.maq} não é valida.</h2>
-  {/if}
-
-  <div>
+  <!-- <div>
     <form method="post" action="/hub?/addLab">
 
       <label for="lab_nome">Nome do Laboratório</label>
@@ -36,10 +21,10 @@
       <button>Enviar</button><br>
 
     </form>
-  </div>
+  </div> 
 
   <div>
-    <form method="post" action="/hub?/send_err">
+    <form method="post" action="/hub?/addErr">
 
       <label for="lab_id">Laboratório</label>
       <select name="lab_id" title="laboratório">
@@ -84,8 +69,14 @@
         <td>{error.error_maq}</td>
         <td>{error.description}</td>
         <td>{error.isFixed}</td>
-
-        <!-- {@debug error} -->
+        <td>
+          <form method="POST" action="/hub?/deleteEntry">
+            <input type="hidden" name="id" value={error.error_id} />
+            <button>Remover</button>
+          </form>
+        </td>
+        
+        {@debug error} 
         
       </tr>
     
@@ -102,7 +93,7 @@
       </select>
       <button>Deletar</button>
     </form>
-  </div>
+  </div> 
 
 </section>
 
@@ -116,30 +107,30 @@
     </tr>
     {#each data.labData as labs}
       <tr>
-        <td>{labs.lab_id}</td>
-        <td>{labs.lab_name}</td>
-        <td>{labs.maqs}</td>
+        
+          <td>{labs.lab_id}</td>
+          <td>{labs.lab_name}</td>
+          <td>{labs.maqs}</td>
+          <td>
+        <form method="POST" action="/hub?/deleteLab" >
+          <input type="hidden" name="id" value={labs.lab_id} />
+          <button value="Remover" aria-label="Remove">Remover</button>
+        </form>
+      </td>
       </tr>
     {/each}
   </table>
 
-  <div class="delete">
-    <p>Selecione qual entrada deseja deletar permanentemente.</p>
-    <form method="POST" action="/hub?/deleteLab">
-      <select name="id">
-        {#each data.labData as err}
-          <option value="{err.lab_id}">{err.lab_name}</option>
-        {/each}
-      </select>
-      <button>Deletar</button>
-    </form>
-  </div>
 
-</section>
+</section> -->
 
 <p>    </p>
 </body>
 
+<svelte:head>
+  <title>CIET | Página Central</title>
+  <meta name="description" content="Página Central do Sistema de Gerenciamento de Erros do CIET.">
+</svelte:head>
 <!--
 
   Todos tem acesso a ver quais erros existem nos laboratórios, e todos podem adicionar novos
@@ -149,51 +140,4 @@
 
     
   -->
-  <style>
-
-    
-
-    body{
-        margin:0;
-        padding:0;
-        background-color: gray;
-        width: 100%;
-        height: 100%;
-    }
-
-    .show-error {
-      margin: auto;
-      width: 50%;
-      border: 3px solid black;
-      padding: 10px;
-    }
-
-    .show-labs{
-      margin: auto;
-      width: 50%;
-      border: 3px solid black;
-      padding: 10px;
-    }
-
-    .insert{
-      margin: auto;
-      width: 50%;
-      border: 3px solid black;
-      padding: 10px;
-    }
-
-    table, th, td {
-      margin: auto;
-    }
-
-    th, td {
-      border: 3px;
-      border-style: solid;
-      border-collapse: collapse;
-      border-spacing: 5px;
-      padding: 2px 2px 3px 3px;
-    }
-
-    td:hover {background-color: #D6EEEE;}
-
-  </style>
+  

@@ -1,16 +1,14 @@
-<script>
-	import { linear } from 'svelte/easing';
-  import Show from "./show.svelte";
-  import Insert from "./insert.svelte"
-    export let data;
-    //console.log(data.data);
-</script>
+<!-- <script lang="ts">
+    import { linear } from 'svelte/easing';
 
-<Show />
-<Insert />
-<body>
+    
+</script> -->
 
-  <section class="show-labs">
+<!-- Existe algum problema em tentar separar a pagina principal em duas, pois o let data usado na pagina principal não é permitido usar nessa "página separada"
+Descobrir um jeito de separar ou manter do modo normal.
+-->
+
+<!-- <section class="show-labs">
 
       <table>
         <tr>
@@ -28,20 +26,17 @@
                 <input type="hidden" name="id" value={labs.lab_id}/>
                 <button value="Remover" aria-label="Remove">Remover</button>
               </form>
-            </td>
+            </td> -->
+
             <!-- Adicionar um contador para mostrar quantos erros não resolvidos tem em cada laboratório -->
-          </tr>
+
+        <!-- </tr>
         {/each}
       </table>
   
     <div class="alter">
       
     </div>
-  </section>
+  </section> -->
 
-</body>
-  
-<svelte:head>
-  <title>CIET | Laboratórios</title>
-  <meta name="description" content="Página de Gerenciamento dos Laboratórios do CIET.">
-</svelte:head>
+<!-- </section> -->
