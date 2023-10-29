@@ -44,3 +44,7 @@ You can preview the production build with `npm run preview`.
 > To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
 
 PRISMA
+
+npx prisma generate
+
+npx prisma db pull  // Para importar a formação do Banco de dados especificado

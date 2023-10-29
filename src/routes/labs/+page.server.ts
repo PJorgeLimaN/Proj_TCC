@@ -1,4 +1,4 @@
-import type { Actions } from "@sveltejs/kit";
+import { redirect, type Actions } from "@sveltejs/kit";
 import {Prisma, PrismaClient} from '@prisma/client'
 
 const prisma = new PrismaClient();
@@ -35,9 +35,9 @@ export const actions = {
     updateLab: async (event) => {
         const data = await event.request.formData();
 
-        const id = data.get("id");
-        const name = data.get("lab_name");
-        const maqs = data.get("maq_qt");
+        const id = data.get("labId");
+        const name = data.get("labName");
+        const maqs = data.get("maqs");
         
         if(!id || !maqs || !name) return;
 
@@ -67,10 +67,15 @@ export const actions = {
     
 }
 
-export async function load({}) {
+export async function load({ cookies, url}) {
     const prisma = new PrismaClient();
     const errData = await prisma.errors.findMany({include:{labs:true}});
     const labData = await prisma.labs.findMany();
+
+    if(!cookies.get('userType') || !cookies.get('username')){
+        throw redirect(307, `/login/?redirectTo=${url.pathname}`)
+    }
+
     return {errData, labData
         
     }

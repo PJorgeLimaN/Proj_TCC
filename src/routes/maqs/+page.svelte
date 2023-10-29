@@ -3,15 +3,17 @@
   import { error } from '@sveltejs/kit';
   import { linear } from 'svelte/easing';
 
-    export let data;
+    export let data; // Forma geral de todos os dados que chegam na página //let é basicamente um var, que não pode ser redeclarado, a menos que dentro de um bloco {}, como um if ou iguais.
     export let form;
-    $: selLab=0;
-    /* console.log(form); */
-    //console.log(data.errData);
-    //console.log(data.data);
     
-
+    /* 
+    Quando possível, adicionar uma maneira de enviar junto com todos os dados, o nome do usuário que realizou o cadastro do erro
+    Se possível, encontrar uma forma de pegar o nome do usuário no computador, ou o nome da máquina, para maior facilidade de impedir ou punir aqueles que decidirem adicionar diversos erros de uma só vez
+    */
     
+    const errD = data.errData; // Escolhendo especificamente uma parte dos dados enviados a pagina
+    const labD = data.labData;
+    const usrType = data.typeUsr || 4;
     
 </script>
 
@@ -20,8 +22,7 @@
 <section class="insert">
 
   {#if form?.message}
-  <h2 class="error">{form?.message}</h2>
-  
+    <h2 class="error">{form?.message}</h2>  
   {/if}
 
   <div class="divIn">
@@ -29,10 +30,12 @@
       <div>
         <label for="lab_id">Laboratório</label>
         <select name="lab_id" title="laboratório" placeholder="Lab">
-          {#each data.labData as labs}
-            <option value="{labs.lab_id}">{labs.lab_name}</option>
+          <!-- {#each data.labData as labs} -->
+          {#each labD as labs}
+            <option value="{labs.lab_id}">{labs.lab_name} ({labs.maqs})</option>
           {/each}
         </select>
+        <!-- Encontrar uma maneira de dar Bind no valor escolhido e o valor máximo do Laboratório -->
       </div>
 
       <!-- {@debug selLab} -->
@@ -59,30 +62,42 @@
   
   <table>
     <tr>
+        {#if (+usrType < 4) && (+usrType > 0)}
       <th>ID do Erro</th>
+        {/if}
       <th>Laboratório</th>
       <th>Máquina</th>
       <th>Descrição</th>
       <th>Status</th>
+        {#if (+usrType < 4) && (+usrType > 0)}
+      <th>Criado</th>
+      <th>Editado</th>
+        {/if}
     </tr>
     
-    {#each data.errData as error}
+    {#each errD as error}
     
       <tr>
+          {#if (+usrType < 4) && (+usrType > 0)}
         <td>{error.error_id}</td>
+          {/if}
         <td>{error.labs.lab_name}</td>
         <td>{error.error_maq}</td>
         <td>{error.description}</td>
         <td>{error.isFixed}</td>
+          {#if (+usrType < 4) && (+usrType > 0)}
+        <td>{error.create_time.toLocaleString()}</td>
+        <td>{error.modified_time?.toLocaleString()}</td>
         <td>
-          <form method="POST" action="/maqs?/deleteEntry">
-            <input type="hidden" name="id" value={error.error_id} />
-            <button>Remover</button>
-          </form>
+            <form method="POST" action="/maqs?/deleteEntry">
+              <input type="hidden" name="id" value={error.error_id} />
+              <button>Remover</button>
+            </form>
         </td>
         <td>
-          <a href="/maqs/{error.error_id}">Editar</a>
+            <a href="/maqs/{error.error_id}" class="button">Editar</a>
         </td>
+          {/if}
         <!-- {@debug error} -->
         
       </tr>

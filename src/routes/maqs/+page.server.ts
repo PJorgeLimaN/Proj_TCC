@@ -1,7 +1,8 @@
-import type { Actions } from "@sveltejs/kit";
+import { redirect, type Actions } from "@sveltejs/kit";
 import {Prisma, PrismaClient} from '@prisma/client'
 
 const prisma = new PrismaClient();
+
 
 export const actions = {
 
@@ -15,7 +16,6 @@ export const actions = {
 
         //console.log(lab)
         
-
         if(!lab || !maq || !desc) return;
         const qtMaq = await prisma.labs.findUnique({
             where: {
@@ -96,16 +96,28 @@ export const actions = {
         Id próprio para mostrar na lista de soluções
 
         Automaticamente após criar a solução atualizar a condição do erro para "Resolvido(1)"
+
+        Fase 2
+        Criar uma tabela que adiciona erros unicos e suas resoluções, para facilitar adição de novos erros e busca de soluções
     */
 }satisfies Actions;
 
 
 
-export async function load({}) {
+export async function load({ cookies, url }) {
     const prisma = new PrismaClient();
     const errData = await prisma.errors.findMany({include:{labs:true}});
     const labData = await prisma.labs.findMany();
-    return {errData, labData
+
+    if(!cookies.get('userType') || !cookies.get('username')){
+        throw redirect(307, `/login/?redirectTo=${url.pathname}`);
+    }
+        const typeUsr = cookies.get('userType');
+    
+
+
+
+    return {errData, labData, typeUsr
         
     }
 }

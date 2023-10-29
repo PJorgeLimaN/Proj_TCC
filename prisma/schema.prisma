@@ -8,12 +8,14 @@ datasource db {
 }
 
 model errors {
-  error_id    Int    @id @default(autoincrement())
-  description String @db.VarChar(500)
-  error_maq   Int
-  lab_id      Int
-  isFixed     Int    @default(0) @db.TinyInt
-  labs        labs   @relation(fields: [lab_id], references: [lab_id], onDelete: Cascade, onUpdate: NoAction, map: "lab_id")
+  error_id      Int       @id @default(autoincrement())
+  description   String    @db.VarChar(500)
+  error_maq     Int
+  lab_id        Int
+  isFixed       Int       @default(0) @db.TinyInt
+  create_time   DateTime  @default(now()) @map("create-time") @db.DateTime(0)
+  modified_time DateTime? @default(now()) @map("modified-time") @db.DateTime(0)
+  labs          labs      @relation(fields: [lab_id], references: [lab_id], onDelete: Cascade, onUpdate: NoAction, map: "lab_id")
 
   @@index([lab_id], map: "lab_id_idx")
 }
@@ -36,11 +38,18 @@ model user_types {
 model users {
   user_id      Int        @id @unique(map: "user_id_UNIQUE") @default(autoincrement())
   user_type    Int
-  user_name    String     @db.VarChar(45)
+  user_name    String     @unique(map: "user_name_UNIQUE") @db.VarChar(45)
   user_pass    String     @db.VarChar(45)
   user_desc    String?    @db.VarChar(200)
-  user_created DateTime   @db.DateTime(0)
+  user_created DateTime   @default(now()) @db.DateTime(0)
   user_types   user_types @relation(fields: [user_type], references: [type_id], onDelete: Cascade, map: "type_id")
 
   @@index([user_type], map: "type_id_idx")
+}
+
+model solutions {
+  sol_id   Int      @id @unique(map: "sol_id_UNIQUE") @default(autoincrement())
+  sol_err  Int
+  sol_desc String   @db.VarChar(200)
+  sol_date DateTime @db.DateTime(0)
 }

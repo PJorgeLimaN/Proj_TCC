@@ -51,6 +51,12 @@ a{
     width: 100%;
 }
 
+.container label {
+  text-decoration: solid;
+  font-weight: bolder;
+  font-size: 1.2em;
+}
+
 .descText {
   min-width: 20%;
   min-height: 10%;
@@ -91,6 +97,23 @@ a{
   .error{
     color: red;
   }
+
+  .button {
+    border: solid 1px black;
+    background-color: #ddd;
+    color: black;
+  }
+
+  .hubTable {
+    min-width: 15%;
+  }
+
+  .hubTable td, tr, th {
+    min-width: 15%;
+    text-align: center;
+  }
+
+
 
   table, th, td {
     margin: auto;

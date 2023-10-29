@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 
-export const load = async ({ fetch , params: { id }}) => {
+export const load = async ({ params: { id } }) => {
     
     const prisma = new PrismaClient();
 

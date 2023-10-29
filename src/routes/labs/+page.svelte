@@ -29,7 +29,11 @@
                 <button value="Remover" aria-label="Remove">Remover</button>
               </form>
             </td>
-            <!-- Adicionar um contador para mostrar quantos erros não resolvidos tem em cada laboratório -->
+            <td>
+              <a href="/labs/{labs.lab_id}" class="button">Editar</a>
+          </td>
+            <!-- Adicionar um contador para mostrar quantos erros não resolvidos tem em cada laboratório 
+            Adicionar nesse contador a opção de clicar e ver todos os erros que existem em um dado laboratório.-->
           </tr>
         {/each}
       </table>

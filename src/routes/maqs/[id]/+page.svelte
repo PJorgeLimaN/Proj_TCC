@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { redirect } from '@sveltejs/kit';
+
 
     export let data;
 
@@ -33,6 +35,8 @@
                     </div>
 
                     <input type="submit" value="Atualizar">
+
+                    <a href="./" class="button">Voltar</a>
                 </form>
             </form>
         </div>
