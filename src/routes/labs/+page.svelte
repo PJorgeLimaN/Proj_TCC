@@ -23,13 +23,13 @@
             <td>{labs.lab_id}</td>
             <td>{labs.lab_name}</td>
             <td>{labs.maqs}</td>
-            <td>
+            <td class="butTD">
               <form method="POST" action="/labs?/deleteLab">
                 <input type="hidden" name="id" value={labs.lab_id}/>
-                <button value="Remover" aria-label="Remove">Remover</button>
+                <button value="Remover" aria-label="Remove" class="button">Remover</button>
               </form>
             </td>
-            <td>
+            <td class="butTD">
               <a href="/labs/{labs.lab_id}" class="button">Editar</a>
           </td>
             <!-- Adicionar um contador para mostrar quantos erros não resolvidos tem em cada laboratório 

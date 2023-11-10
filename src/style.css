@@ -104,6 +104,10 @@ a{
     color: black;
   }
 
+  .butTD {
+    max-width: fit-content;
+  }
+
   .hubTable {
     min-width: 15%;
   }

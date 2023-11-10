@@ -4,6 +4,7 @@ import {Prisma, PrismaClient} from '@prisma/client'
 const prisma = new PrismaClient();
 
 
+
 export const actions = {
 
     addErr: async (event) => {
@@ -13,10 +14,12 @@ export const actions = {
         const lab = data.get("lab_id");
         const maq = data.get("maq_id");
         const desc = data.get("error");
-
-        //console.log(lab)
+        const usr = data.get('user_id')
         
-        if(!lab || !maq || !desc) return;
+        if(!lab || !maq || !desc || !usr) return;
+
+        //console.log(lab, maq, desc, usr);
+
         const qtMaq = await prisma.labs.findUnique({
             where: {
                 lab_id: +lab, 
@@ -36,12 +39,13 @@ export const actions = {
                 message: "O laboratório escolhido ("+qtMaq?.lab_name+") possui somente "+qtMaq?.maqs+" maquinas."
             };
         }
-        //console.log(typeof(lab));
+        //console.log("Dados" +data);
         const erro = await prisma.errors.create({
             data : {
                 lab_id: +lab,
                 error_maq: +maq,
-                description: desc.toString(), 
+                description: desc.toString(),
+                user_id: +usr, 
             }
         })
         //console.log(erro);
@@ -106,18 +110,30 @@ export const actions = {
 
 export async function load({ cookies, url }) {
     const prisma = new PrismaClient();
-    const errData = await prisma.errors.findMany({include:{labs:true}});
+    const errData = await prisma.errors.findMany({
+        include:{
+            labs:true,
+            users:true
+        },
+        orderBy:{
+            lab_id: 'asc',
+        }
+        
+    });
     const labData = await prisma.labs.findMany();
 
-    if(!cookies.get('userType') || !cookies.get('username')){
+    if(!cookies.get('userType') || !cookies.get('userName')){
         throw redirect(307, `/login/?redirectTo=${url.pathname}`);
     }
         const typeUsr = cookies.get('userType');
+        const nameUsr = cookies.get('userName');
+        const idUsr = cookies.get('userId');
+
     
 
 
 
-    return {errData, labData, typeUsr
+    return {errData, labData, typeUsr, nameUsr, idUsr
         
     }
 }

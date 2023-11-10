@@ -13,7 +13,10 @@
     
     const errD = data.errData; // Escolhendo especificamente uma parte dos dados enviados a pagina
     const labD = data.labData;
-    const usrType = data.typeUsr || 4;
+    const usrType = data.typeUsr || 0;
+    const usrName = data.nameUsr || "";
+    const usrId = data.idUsr || 0;
+    
     
 </script>
 
@@ -32,7 +35,7 @@
         <select name="lab_id" title="laboratório" placeholder="Lab">
           <!-- {#each data.labData as labs} -->
           {#each labD as labs}
-            <option value="{labs.lab_id}">{labs.lab_name} ({labs.maqs})</option>
+            <option value="{labs.lab_id}">{labs.lab_name} ({labs.maqs})</option> <!-- Por enquanto essa é a melhor maneira de mostrar a quantidade total de máquinas em um laboratório -->
           {/each}
         </select>
         <!-- Encontrar uma maneira de dar Bind no valor escolhido e o valor máximo do Laboratório -->
@@ -49,6 +52,8 @@
         <label for="error">Descrição do Erro</label>
         <input type="text" name="error" title="Descrição" required size="100" placeholder="Teclado Não Funciona"/><br>
       </div>
+
+      <input type="number" name="user_id" value="{usrId}" hidden>
       <button>Enviar</button><br>
 
     </form>
@@ -70,6 +75,7 @@
       <th>Descrição</th>
       <th>Status</th>
         {#if (+usrType < 4) && (+usrType > 0)}
+      <th>Criado por</th>
       <th>Criado</th>
       <th>Editado</th>
         {/if}
@@ -84,8 +90,15 @@
         <td>{error.labs.lab_name}</td>
         <td>{error.error_maq}</td>
         <td>{error.description}</td>
-        <td>{error.isFixed}</td>
+        
+        {#if error.isFixed == 0}
+        <td>Não Resolvido</td>
+        {:else if error.isFixed == 1}
+        <td>Resolvido</td>
+        {/if}
+        
           {#if (+usrType < 4) && (+usrType > 0)}
+        <td>{error.users.user_name}</td>
         <td>{error.create_time.toLocaleString()}</td>
         <td>{error.modified_time?.toLocaleString()}</td>
         <td>

@@ -72,11 +72,15 @@ export async function load({ cookies, url}) {
     const errData = await prisma.errors.findMany({include:{labs:true}});
     const labData = await prisma.labs.findMany();
 
-    if(!cookies.get('userType') || !cookies.get('username')){
+    if(!cookies.get('userType') || !cookies.get('userName')){
         throw redirect(307, `/login/?redirectTo=${url.pathname}`)
     }
 
-    return {errData, labData
+        const typeUsr = cookies.get('userType');
+        const nameUsr = cookies.get('userName');
+        const idUsr = cookies.get('userId');
+
+    return {errData, labData, typeUsr, nameUsr, idUsr
         
     }
 }

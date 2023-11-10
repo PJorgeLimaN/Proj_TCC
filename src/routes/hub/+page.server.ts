@@ -20,6 +20,7 @@ export async function load({ cookies }) {
     });
 
     const typeUsr = cookies.get('userType');
+    const idUsr = cookies.get('userID')
 
     return {labErrCount, typeUsr
         

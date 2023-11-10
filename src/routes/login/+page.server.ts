@@ -29,6 +29,7 @@ export const actions = {
                 user_name: true,
                 user_pass: true,
                 user_type: true,
+                user_id: true,
             },
         })
         
@@ -42,14 +43,21 @@ export const actions = {
             }
         };
 
-        cookies.set("username", usData.user_name, { path: "./", maxAge: 60 * 10}),
-        cookies.set("userType", usData.user_type.toString(), { path: "./" , maxAge: 60 * 10})
+        cookies.set("userName", usData.user_name, { path: "./", maxAge: 60 * 10}),
+        cookies.set("userType", usData.user_type.toString(), { path: "./" , maxAge: 60 * 10}),
+        cookies.set("userId", usData.user_id.toString(), { path: "./", maxAge: 60 * 10});
 
-        redirect(307 ,`/hub`);
+        if(cookies.get('userType') && cookies.get('userName')){
+            throw redirect(307, `/hub/`);
+        }
     },
     
-    access:async ({ cookies }) => {
-        cookies.set("userType", "4");
-    },
+    
 
 }satisfies Actions;
+
+export async function load({cookies}) {
+    if(cookies.get('userType') && cookies.get('userName')){
+        throw redirect(307, `/hub/`);
+    }
+}
