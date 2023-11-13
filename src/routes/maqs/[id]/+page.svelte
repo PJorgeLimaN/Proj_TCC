@@ -4,7 +4,16 @@
 
     export let data;
 
+    const usrType = data.typeUsr || 0;
+    const usrName = data.nameUsr || "";
+    const usrId = data.idUsr || 0;
 
+    /* Pagina Maqs agora deve:
+    Mostrar as informações da Máquina (ID, Nome, e Lab em que se encontra) 
+    Lista de erros da máquina (Talvez separar entre erros resolvidos e não resolvidos)
+    
+    Permitir edição do lab e nome da máquina (Transferencia de máquina)
+    */
 
 </script>
 
@@ -40,6 +49,49 @@
                 </form>
             </form>
         </div>
+
+        <section class="container">
+            <div>
+                <table>
+                    <tr>
+                        {#if +usrType < 4 && +usrType > 0}
+                            <th>ID do Erro</th>
+                        {/if}
+                        <th>Máquina</th>
+                        <th>Descrição</th>
+                        <th>Status</th>
+                        {#if +usrType < 4 && +usrType > 0}
+                            <th>Criado por</th>
+                            <th>Criado</th>
+                            <th>Editado</th>
+                        {/if}
+                    </tr>
+    
+                    <!-- {#each ers as erros}
+                        <tr>
+                            {#if +usrType < 4 && +usrType > 0}
+                                <td>{erros.error_id}</td>
+                            {/if}
+                            <td>{erros.error_maq}</td>
+                            <td>{erros.description}</td>
+    
+                            {#if erros.isFixed == 0}
+                                <td>Não Resolvido</td>
+                            {:else if erros.isFixed == 1}
+                                <td>Resolvido</td>
+                            {/if}
+    
+                            {#if +usrType < 4 && +usrType > 0}
+                                <td>{erros.users.user_name}</td>
+                                <td>{erros.create_time.toLocaleString()}</td>
+                                <td>{erros.modified_time?.toLocaleString()}</td>
+                            {/if}
+                            
+                        </tr>
+                    {/each} -->
+                </table>
+            </div>
+        </section>
     </section>
 </body>
 

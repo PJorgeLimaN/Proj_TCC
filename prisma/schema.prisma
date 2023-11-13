@@ -23,12 +23,28 @@ model errors {
   @@index([user_id], map: "user_id_idx")
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model labs {
-  lab_id   Int      @id @default(autoincrement())
-  lab_name String   @db.VarChar(45)
+  lab_id   Int        @id @default(autoincrement())
+  lab_name String     @db.VarChar(45)
   maqs     Int
   errors   errors[]
+  machines machines[]
+}
+
+model machines {
+  maqId    Int     @id @unique(map: "maqId_UNIQUE") @default(autoincrement())
+  maqLabId Int?
+  maqName  String? @db.VarChar(45)
+  labs     labs?   @relation(fields: [maqLabId], references: [lab_id], onDelete: Cascade, map: "maqLabId")
+
+  @@index([maqLabId], map: "maqLabId_idx")
+}
+
+model solutions {
+  sol_id   Int      @id @unique(map: "sol_id_UNIQUE") @default(autoincrement())
+  sol_err  Int
+  sol_desc String   @db.VarChar(200)
+  sol_date DateTime @db.DateTime(0)
 }
 
 model user_types {
@@ -49,11 +65,4 @@ model users {
   user_types   user_types @relation(fields: [user_type], references: [type_id], onDelete: Cascade, map: "type_id")
 
   @@index([user_type], map: "type_id_idx")
-}
-
-model solutions {
-  sol_id   Int      @id @unique(map: "sol_id_UNIQUE") @default(autoincrement())
-  sol_err  Int
-  sol_desc String   @db.VarChar(200)
-  sol_date DateTime @db.DateTime(0)
 }

@@ -67,6 +67,7 @@
 						{#if +usrType < 4 && +usrType > 0}
 							<td>{erros.error_id}</td>
 						{/if}
+						
 						<td>{erros.error_maq}</td>
 						<td>{erros.description}</td>
 

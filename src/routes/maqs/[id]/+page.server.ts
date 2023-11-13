@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client'
+import { redirect } from '@sveltejs/kit';
 
-export const load = async ({ params: { id } }) => {
+export const load = async ({ params: { id } , cookies}) => {
     
     const prisma = new PrismaClient();
 
@@ -16,6 +17,8 @@ export const load = async ({ params: { id } }) => {
         },
     })
 
+
+
     const labR = await prisma.labs.findUnique({
         where: {
             lab_id: report?.lab_id,
@@ -25,12 +28,20 @@ export const load = async ({ params: { id } }) => {
         }
     })
 
+    if(!cookies.get('userType') || !cookies.get('userName')){
+        throw redirect(307, `/login`);
+    }
+        const typeUsr = cookies.get('userType');
+        const nameUsr = cookies.get('userName');
+        const idUsr = cookies.get('userId');
+
     if(report){ 
         return{
             eMaq: report.error_maq,
             desc: report.description,
             nameL: labR?.lab_name,
             eId: report.error_id,
+            typeUsr, nameUsr, idUsr,
         }
     }
 
