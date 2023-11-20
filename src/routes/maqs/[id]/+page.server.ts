@@ -5,28 +5,40 @@ export const load = async ({ params: { id } , cookies}) => {
     
     const prisma = new PrismaClient();
 
-    const report = await prisma.errors.findFirst({
+    // Refatorar esse código para condizer com as novas tabelas
+
+    console.log(id);
+    const report = await prisma.errors.findMany({
+        include: {
+            users: {
+                select: {
+                    user_name: true,
+                }
+            }
+        }, where: {
+            maq_id: +{id}.id,
+        }, 
+    });
+
+    const maq = await prisma.machines.findUnique({
         where: {
-            error_id: +{id}.id,
-        },
-        select: {
-            error_id: true,
-            error_maq: true,
-            description: true,
-            lab_id: true,
-        },
-    })
-
-
-
-    const labR = await prisma.labs.findUnique({
-        where: {
-            lab_id: report?.lab_id,
-        },
-        select: {
-            lab_name: true,
+            maqId: +{id}.id,
+        }, include: {
+            labs: {
+                select: {
+                    lab_name: true,
+                }
+            }
         }
-    })
+    });
+
+    
+
+    //console.log("Report: "+report+"/n Maquina: "+maq?.maqId);
+
+
+    //console.log("Prossegue")
+
 
     if(!cookies.get('userType') || !cookies.get('userName')){
         throw redirect(307, `/login`);
@@ -35,15 +47,9 @@ export const load = async ({ params: { id } , cookies}) => {
         const nameUsr = cookies.get('userName');
         const idUsr = cookies.get('userId');
 
-    if(report){ 
-        return{
-            eMaq: report.error_maq,
-            desc: report.description,
-            nameL: labR?.lab_name,
-            eId: report.error_id,
+        return{ maq, report,
             typeUsr, nameUsr, idUsr,
         }
-    }
 
     /* const report = await fetch(/) */
 }

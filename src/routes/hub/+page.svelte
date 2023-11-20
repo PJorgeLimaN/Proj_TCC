@@ -1,7 +1,7 @@
 <script lang="ts">
   export let data;
 
-  const labsData = data.labErrCount;
+  /* const labsData = data.labErrCount; */
   const usrType = data.typeUsr || 0;
 
   /* 
@@ -19,7 +19,7 @@
       {#if (+usrType > 0) && (+usrType < 4) }
         <a href="./labs">Laboratórios</a>
       {/if}
-        <a href="./maqs">Máquinas</a>
+        <a href="./reports">Erros</a>
     {/if}
     {#if +usrType == 0}
       <a href="./login">Favor Realizar Login</a>
@@ -29,7 +29,7 @@
 
 <body>
 
-  <table class="hubTable">
+ <!--  <table class="hubTable">
     
     <th>Laboratório</th>
     <th>Máquinas</th>
@@ -47,7 +47,7 @@
     
 
 
-  </table>
+  </table> -->
 
 
   <!-- 

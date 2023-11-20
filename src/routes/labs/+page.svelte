@@ -41,6 +41,7 @@
     <div class="alter">
       
     </div>
+    <a href="./" class="button">Voltar</a>
   </section>
 
 </body>

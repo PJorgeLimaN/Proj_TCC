@@ -6,8 +6,13 @@
 	const usrType = data.typeUsr || 0;
 	const usrName = data.nameUsr || '';
 	const usrId = data.idUsr || 0;
+	
+	
     const labs = data.lab;
-	const ers = data.lab?.errors || [];
+	const maqs = data.maqs || [];
+
+	let maq = '';
+	
     
 	/* Possibilidades:
     Como é uma tela para editar um laboratório, pode também ser utilizada como tela para ver um laboratório específico e os erros pertinentes somente aquele laboratório
@@ -18,6 +23,22 @@
 </script>
 
 <body>
+	
+	<section class="container">
+		<div>
+			<form action="/maqs/{maq}" method="GET">
+				<select name="id" title="Máquina" placeholder="Maquina" bind:value={maq}>
+					{#each maqs as maqs}
+						<option value={maqs.maqId}>{maqs.maqNum}</option>	
+					{/each}
+				</select>
+
+				<input type="submit" value="Selecionar Máquina">
+			</form>
+		</div>
+	</section>
+
+	{#if +usrType > 0 && +usrType < 4 }
 	<section class="container">
 		<div>
 			<form>
@@ -50,44 +71,42 @@
 			<table>
 				<tr>
 					{#if +usrType < 4 && +usrType > 0}
-						<th>ID do Erro</th>
+						<th>ID da Máquina</th>
 					{/if}
 					<th>Máquina</th>
-					<th>Descrição</th>
-					<th>Status</th>
+					<th>Quantidade de Erros?</th>
 					{#if +usrType < 4 && +usrType > 0}
-						<th>Criado por</th>
 						<th>Criado</th>
 						<th>Editado</th>
 					{/if}
 				</tr>
 
-				{#each ers as erros}
+				{#each maqs as maq}
 					<tr>
 						{#if +usrType < 4 && +usrType > 0}
-							<td>{erros.error_id}</td>
+							<td>{maq.maqId}</td>
 						{/if}
 						
-						<td>{erros.error_maq}</td>
-						<td>{erros.description}</td>
-
-						{#if erros.isFixed == 0}
-							<td>Não Resolvido</td>
-						{:else if erros.isFixed == 1}
-							<td>Resolvido</td>
-						{/if}
+						<td>{maq.maqNum}</td>
+						<td>{maq._count.errors}</td>
 
 						{#if +usrType < 4 && +usrType > 0}
-							<td>{erros.users.user_name}</td>
-							<td>{erros.create_time.toLocaleString()}</td>
-							<td>{erros.modified_time?.toLocaleString()}</td>
+							<td>Talvez</td>
+							<td>Talvez</td>
 						{/if}
 						<!-- {@debug error} -->
 					</tr>
 				{/each}
 			</table>
 		</div>
+		<a href="./" class="button">Voltar</a>
 	</section>
+	{/if}
+
+	<form>
+
+	</form>
+	
 </body>
 
 <svelte:head>

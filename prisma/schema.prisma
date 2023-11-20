@@ -8,43 +8,51 @@ datasource db {
 }
 
 model errors {
-  error_id      Int       @id @default(autoincrement())
-  description   String    @db.VarChar(500)
-  error_maq     Int
-  lab_id        Int
-  isFixed       Int       @default(0) @db.TinyInt
+  error_id      Int         @id @default(autoincrement())
+  description   String      @db.VarChar(500)
+  maq_id        Int
+  isFixed       Int         @default(0) @db.TinyInt
   user_id       Int
-  create_time   DateTime  @default(now()) @map("create-time") @db.DateTime(0)
-  modified_time DateTime? @default(now()) @map("modified-time") @db.DateTime(0)
-  labs          labs      @relation(fields: [lab_id], references: [lab_id], onDelete: Cascade, onUpdate: NoAction, map: "lab_id")
-  users         users     @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "user_id")
+  create_time   DateTime    @default(now()) @map("create-time") @db.DateTime(0)
+  modified_time DateTime?   @default(now()) @map("modified-time") @db.DateTime(0)
+  machines      machines    @relation(fields: [maq_id], references: [maqId], onDelete: Cascade, map: "maq_id")
+  users         users       @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "user_id")
+  solutions     solutions[]
 
-  @@index([lab_id], map: "lab_id_idx")
   @@index([user_id], map: "user_id_idx")
+  @@index([maq_id], map: "error_maq_idx")
 }
 
 model labs {
   lab_id   Int        @id @default(autoincrement())
   lab_name String     @db.VarChar(45)
   maqs     Int
-  errors   errors[]
   machines machines[]
 }
 
 model machines {
-  maqId    Int     @id @unique(map: "maqId_UNIQUE") @default(autoincrement())
-  maqLabId Int?
-  maqName  String? @db.VarChar(45)
-  labs     labs?   @relation(fields: [maqLabId], references: [lab_id], onDelete: Cascade, map: "maqLabId")
+  maqId    Int      @id @unique(map: "maqId_UNIQUE") @default(autoincrement())
+  maqLabId Int
+  maqName  String   @db.VarChar(45)
+  maqNum   String   @db.VarChar(4)
+  errors   errors[]
+  labs     labs     @relation(fields: [maqLabId], references: [lab_id], onDelete: Cascade, map: "maqLabId")
 
   @@index([maqLabId], map: "maqLabId_idx")
 }
 
 model solutions {
-  sol_id   Int      @id @unique(map: "sol_id_UNIQUE") @default(autoincrement())
-  sol_err  Int
-  sol_desc String   @db.VarChar(200)
-  sol_date DateTime @db.DateTime(0)
+  sol_id      Int       @id @unique(map: "sol_id_UNIQUE") @default(autoincrement())
+  sol_err     Int
+  sol_desc    String    @db.VarChar(200)
+  sol_user_id Int
+  sol_fixed   Int       @db.TinyInt
+  sol_date    DateTime? @default(now()) @db.DateTime(0)
+  errors      errors    @relation(fields: [sol_err], references: [error_id], onDelete: Cascade, map: "sol_err")
+  users       users     @relation(fields: [sol_user_id], references: [user_id], onDelete: NoAction, map: "sol_user_id")
+
+  @@index([sol_err], map: "sol_err_idx")
+  @@index([sol_user_id], map: "sol_user_id_idx")
 }
 
 model user_types {
@@ -55,14 +63,15 @@ model user_types {
 }
 
 model users {
-  user_id      Int        @id @unique(map: "user_id_UNIQUE") @default(autoincrement())
+  user_id      Int         @id @unique(map: "user_id_UNIQUE") @default(autoincrement())
   user_type    Int
-  user_name    String     @unique(map: "user_name_UNIQUE") @db.VarChar(45)
-  user_pass    String     @db.VarChar(45)
-  user_desc    String?    @db.VarChar(200)
-  user_created DateTime   @default(now()) @db.DateTime(0)
+  user_name    String      @unique(map: "user_name_UNIQUE") @db.VarChar(45)
+  user_pass    String      @db.VarChar(45)
+  user_desc    String?     @db.VarChar(200)
+  user_created DateTime    @default(now()) @db.DateTime(0)
   errors       errors[]
-  user_types   user_types @relation(fields: [user_type], references: [type_id], onDelete: Cascade, map: "type_id")
+  solutions    solutions[]
+  user_types   user_types  @relation(fields: [user_type], references: [type_id], onDelete: Cascade, map: "type_id")
 
   @@index([user_type], map: "type_id_idx")
 }

@@ -7,91 +7,71 @@ const prisma = new PrismaClient();
 
 export const actions = {
 
-    addErr: async (event) => {
+    /* 
+    Agora dois CRUDs
+    Create, Update e Delete Erros, comandos nessa página
+    Read para Labs e Máquinas
+    Create, Update e Delete Soluções, Comandos aqui também
+    */
+
+    createError: async (event) => {
         const data = await event.request.formData();
-        //console.log(data);
+        if(!data) return;
 
-        const lab = data.get("lab_id");
-        const maq = data.get("maq_id");
-        const desc = data.get("error");
-        const usr = data.get('user_id')
-        
-        if(!lab || !maq || !desc || !usr) return;
-
-        //console.log(lab, maq, desc, usr);
-
-        const qtMaq = await prisma.labs.findUnique({
-            where: {
-                lab_id: +lab, 
-            },
-            select: {
-                maqs: true,
-                lab_name: true
-            },
-        })
-        if(!qtMaq) return;
-        //console.log(qtMaq);
-
-        if((+maq < 0 ) || (+maq > qtMaq?.maqs)){
-            //alert("O laboratório escolhido possui somente "+qtMaq+" maquinas.");
-
-            return {
-                message: "O laboratório escolhido ("+qtMaq?.lab_name+") possui somente "+qtMaq?.maqs+" maquinas."
-            };
-        }
-        //console.log("Dados" +data);
-        const erro = await prisma.errors.create({
-            data : {
-                lab_id: +lab,
-                error_maq: +maq,
-                description: desc.toString(),
-                user_id: +usr, 
-            }
-        })
-        //console.log(erro);
-    },
-
-
-    updateEntry: async (event) => {
-        const data = await event.request.formData();
-
-        const id = data.get("erroId");
-        const maq = data.get("maqN");
+        const maq = data.get("maqId");
         const desc = data.get("desc");
+        const usr = data.get("usrId");
+        if(!maq || !desc || !usr) return;
 
-        if(!id || !maq || !desc) {
-            return{
-                message: "Dados Inválidos",
-            }
-        }
+        
 
-        const upErr = await prisma.errors.update({
-            where: {
-                error_id: +id,
-            },
+        const erro = await prisma.errors.create({
             data: {
+                maq_id: +maq,
                 description: desc.toString(),
+                user_id: +usr,
             }
         })
     },
 
-    deleteEntry: async (event) => {
+
+    createSolution: async (event) => {
         const data = await event.request.formData();
 
-        const id = data.get("id");
-        if(!id) return;
+        const error_id = data.get("error_id");
+        const user_id = data.get("user_id");
+        const desc = data.get("desc");
+        const fixed = data.get("fixed");
 
-        const delErr = await prisma.errors.delete({
-            where: {
-                error_id: +id, 
-            },
-            
-        })
+        if(!error_id || !user_id || !desc || !fixed) return;
+
         
-        console.log(delErr);
+        
+
+        const solut = await prisma.solutions.create({
+            data: {
+                sol_err: +error_id,
+                sol_user_id: +user_id,
+                sol_desc: desc.toString(),
+                sol_fixed: +fixed,
+            },
+        });
+
+        if(+fixed == 1){
+            const fixErro = await prisma.errors.update({
+                where: {
+                    error_id: +error_id,
+                }, data: {
+                    isFixed: 1,
+                },
+            });
+        };
 
     },
 
+    deleteSolution: async (event) => {
+        const data = await event.request.formData();
+    }
 
     /* Criar Solução
         Usa ID do erro para atualizar a condição de resolvido (ou não [Futuramente])
@@ -108,34 +88,47 @@ export const actions = {
 
 
 
+
 export async function load({ cookies, url }) {
-    const prisma = new PrismaClient();
-    const errData = await prisma.errors.findMany({
-        include:{
-            labs:true,
-            users:true
+    if(!cookies.get('userType') || !cookies.get('userName')){
+        throw redirect(307, `/login/?redirectTo=${url.pathname}`)
+    }
+
+
+
+    const typeUsr = cookies.get('userType');
+    const idUsr = cookies.get('userId');
+    const nameUsr = cookies.get('userName');
+
+    const labs = await prisma.labs.findMany({
+        include: {
+            machines: true,
         },
-        orderBy:{
+        orderBy: {
             lab_id: 'asc',
         }
-        
-    });
-    const labData = await prisma.labs.findMany();
+    })
 
-    if(!cookies.get('userType') || !cookies.get('userName')){
-        throw redirect(307, `/login/?redirectTo=${url.pathname}`);
+    const erros = await prisma.errors.findMany({
+        include: {
+            machines: {
+                include: {
+                    labs: {
+                        select: {
+                            lab_name: true,
+                        }, 
+                    },
+                },
+            }
+        }
+    })
+
+
+
+    return{
+        labs, typeUsr, idUsr, nameUsr, erros
     }
-        const typeUsr = cookies.get('userType');
-        const nameUsr = cookies.get('userName');
-        const idUsr = cookies.get('userId');
 
-    
-
-
-
-    return {errData, labData, typeUsr, nameUsr, idUsr
-        
-    }
 }
 
 

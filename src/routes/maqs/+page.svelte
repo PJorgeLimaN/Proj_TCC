@@ -12,53 +12,49 @@
     */
     
     
-    const labD = data.labData;
+    
     const usrType = data.typeUsr || 0;
     const usrName = data.nameUsr || "";
     const usrId = data.idUsr || 0;
+    const machines = data.machines;
     
     
 </script>
 
 <body>
 
-<section class="insert">
+<section class="container">
 
   {#if form?.message}
     <h2 class="error">{form?.message}</h2>  
   {/if}
 
   <div class="divIn">
-    <form method="post" action="/maqs?/addErr">
-      <div>
-        <label for="lab_id">Laboratório</label>
-        <select name="lab_id" title="laboratório" placeholder="Lab">
-          <!-- {#each data.labData as labs} -->
-          {#each labD as labs}
-            <option value="{labs.lab_id}">{labs.lab_name} ({labs.maqs})</option> <!-- Por enquanto essa é a melhor maneira de mostrar a quantidade total de máquinas em um laboratório -->
-          {/each}
-        </select>
-        <!-- Encontrar uma maneira de dar Bind no valor escolhido e o valor máximo do Laboratório -->
-      </div>
+    <table>
+      <tr>
+        <th>ID da Máquina</th>
+        <th>Nome da Máquina</th>
+        <th>Nome do Laboratório</th>
+        <th>Quantidade de Erros</th>
+      </tr>
 
-      <!-- {@debug selLab} -->
-      
-      <div>
-        <label for="maq_id">Máquina</label>
-        <input type="number" name="maq_id" title="Máquina" required min="1" max="100" value="1"/><br>
-      </div>
+      {#each machines as maqs}
+        <tr>
+          <td>{maqs.maqId}</td>
+          <td>{maqs.maqName}</td>
+          <td>{maqs.labs?.lab_name}</td>
+          {#if maqs._count.errors > 0}
+          <td style="background-color: crimson;">{maqs._count.errors}</td>
+          {:else}
+          <td>{maqs._count.errors}</td>
+          {/if}
+          <td><a href="/maqs/{maqs.maqId}" class="button">Mais Informações</a></td>
+        </tr>
 
-      <div>
-        <label for="error">Descrição do Erro</label>
-        <input type="text" name="error" title="Descrição" required size="100" placeholder="Teclado Não Funciona"/><br>
-      </div>
-
-      <input type="number" name="user_id" value="{usrId}" hidden>
-      <button>Enviar</button><br>
-
-    </form>
+      {/each}
+    </table>
   </div>
-
+  <a href="./" class="button">Voltar</a>
 </section>
 
 <br>
@@ -68,7 +64,7 @@
 </body>
 
 <svelte:head>
-  <title>CIET | Erros</title> <!-- Chamado de maqs por erro inicial meu, mas visto que os erros estão ligados as máquinas não tem muito problema.-->
+  <title>CIET | Máquinas</title> <!-- Chamado de maqs por erro inicial meu, mas visto que os erros estão ligados as máquinas não tem muito problema.-->
   <meta name="description" content="Página de Gerenciamento de Erros das máquinas do CIET.">
 </svelte:head>
 

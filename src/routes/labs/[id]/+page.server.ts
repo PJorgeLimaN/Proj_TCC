@@ -6,26 +6,28 @@ export const load = async ({ params: { id } , cookies }) => {
     const prisma = new PrismaClient();
 
     const lab = await prisma.labs.findUnique({
-        include: {
-            errors: {
-                include: {
-                    users: {
-                        select: {
-                            user_name: true,
-                            user_id: true,
-                        },
-                    },
-                },
-                orderBy: {
-                    error_maq: 'asc',
-                }
-            },
-        },
         where: {
-            lab_id: +id,
+            lab_id: +{id}.id,
         },
     })
 
+    const maqs = await prisma.machines.findMany({
+        where: {
+            maqLabId: +{id}.id,
+        }, include: {
+            _count: {
+                select: {
+                    errors: {
+                        where: {
+                            isFixed: 0,
+                        }
+                    }
+                }
+            }
+        }
+    })
+
+    
     
 
     if(!cookies.get('userType') || !cookies.get('userName')){
@@ -35,12 +37,14 @@ export const load = async ({ params: { id } , cookies }) => {
         const nameUsr = cookies.get('userName');
         const idUsr = cookies.get('userId');
 
+    if (!maqs) return;
+
     if(!lab){ 
         return
     }
 
     return{
-        lab, typeUsr, nameUsr, idUsr,
+        typeUsr, nameUsr, idUsr, maqs, lab
     }
 
     /* const report = await fetch(/) */

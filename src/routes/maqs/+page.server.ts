@@ -7,49 +7,7 @@ const prisma = new PrismaClient();
 
 export const actions = {
 
-    addErr: async (event) => {
-        const data = await event.request.formData();
-        //console.log(data);
-
-        const lab = data.get("lab_id");
-        const maq = data.get("maq_id");
-        const desc = data.get("error");
-        const usr = data.get('user_id')
-        
-        if(!lab || !maq || !desc || !usr) return;
-
-        //console.log(lab, maq, desc, usr);
-
-        const qtMaq = await prisma.labs.findUnique({
-            where: {
-                lab_id: +lab, 
-            },
-            select: {
-                maqs: true,
-                lab_name: true
-            },
-        })
-        if(!qtMaq) return;
-        //console.log(qtMaq);
-
-        if((+maq < 0 ) || (+maq > qtMaq?.maqs)){
-            //alert("O laboratório escolhido possui somente "+qtMaq+" maquinas.");
-
-            return {
-                message: "O laboratório escolhido ("+qtMaq?.lab_name+") possui somente "+qtMaq?.maqs+" maquinas."
-            };
-        }
-        //console.log("Dados" +data);
-        const erro = await prisma.errors.create({
-            data : {
-                lab_id: +lab,
-                error_maq: +maq,
-                description: desc.toString(),
-                user_id: +usr, 
-            }
-        })
-        //console.log(erro);
-    },
+    
 
 
     updateEntry: async (event) => {
@@ -93,6 +51,8 @@ export const actions = {
     },
 
 
+
+
     /* Criar Solução
         Usa ID do erro para atualizar a condição de resolvido (ou não [Futuramente])
         Descriçãp do que foi feito para resolver o erro
@@ -110,17 +70,27 @@ export const actions = {
 
 export async function load({ cookies, url }) {
     const prisma = new PrismaClient();
-    const errData = await prisma.errors.findMany({
-        include:{
-            labs:true,
-            users:true
-        },
-        orderBy:{
-            lab_id: 'asc',
-        }
-        
+    /* REFATORAR PARA MOSTRAR TODAS AS MAQUINAS
+    SE POSSIVEL DESCOBRIR UMA FORMA DE MOSTRAR MÁQUINAS POR LABORATÓRIO 
+    NÃO DEU, SÓ VAI DAR PRA DAR [ORDER BY] NAS MAQUINAS PELO MENOS*/
+    const machines = await prisma.machines.findMany({
+        include: {
+            labs: {
+                select: {
+                    lab_name: true
+                }
+            },
+            _count: {
+                select: {
+                    errors: {
+                        where: {
+                            isFixed: 0,
+                        }
+                    }
+                }
+            }
+        }, 
     });
-    const labData = await prisma.labs.findMany();
 
     if(!cookies.get('userType') || !cookies.get('userName')){
         throw redirect(307, `/login/?redirectTo=${url.pathname}`);
@@ -133,7 +103,7 @@ export async function load({ cookies, url }) {
 
 
 
-    return {errData, labData, typeUsr, nameUsr, idUsr
+    return {machines, typeUsr, nameUsr, idUsr
         
     }
 }

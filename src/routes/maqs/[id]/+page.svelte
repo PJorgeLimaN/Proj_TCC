@@ -7,6 +7,10 @@
     const usrType = data.typeUsr || 0;
     const usrName = data.nameUsr || "";
     const usrId = data.idUsr || 0;
+    const machine = data.maq;
+    const ers = data.report;
+    console.log(machine);
+
 
     /* Pagina Maqs agora deve:
     Mostrar as informações da Máquina (ID, Nome, e Lab em que se encontra) 
@@ -18,37 +22,36 @@
 </script>
 
 <body>
-    <section class="container">
+
+    <section class="insert"> <!-- Adicionar Novo Erro -->
+        <h1>{machine?.maqName}</h1>
         <div>
             <form>
-                <form action="/maqs?/updateEntry" method="post">
-
+                <form action="/reports?/createError" method="POST">
+                    <input type="text" name="usrId" value="{usrId}" hidden>
                     <div>
-                        <label for="erroId">Código do Erro</label>
-                        <input type="text" name="erroId" id="erroId" readonly value={data.eId}>
+                        <label for="labName">Laboratório: </label>
+                        <input type="text" name="labName" id="labName" disabled value="{machine?.labs?.lab_name}">
                     </div>
 
                     <div>
-                        <label for="labName">Laboratório</label>
-                        <input type="text" name="labName" id="labName" readonly value={data.nameL}>
+                        <label for="maqN">Máquina: </label>
+                        <input type="text" name="maqN" id="maqN" disabled value="{machine?.maqName}">
+                        <input type="number" name="maqId" hidden value="{machine?.maqId}">
                     </div>
 
                     <div>
-                        <label for="maqN">Máquina</label>
-                        <input type="number" name="maqN" id="maqN" readonly value="{data.eMaq}">
+                        <label for="desc">Descrição do Erro: </label>
+                        <input type="text" name="desc" id="desc" required class="descText">
                     </div>
 
-                    <div>
-                        <label for="desc">Descrição do Erro</label>
-                        <input type="text" name="desc" id="desc" value={data.desc} required class="descText">
-                    </div>
-
-                    <input type="submit" value="Atualizar">
+                    <input type="submit" value="Adicionar Erro">
 
                     <a href="./" class="button">Voltar</a>
                 </form>
             </form>
         </div>
+    </section>
 
         <section class="container">
             <div>
@@ -57,7 +60,6 @@
                         {#if +usrType < 4 && +usrType > 0}
                             <th>ID do Erro</th>
                         {/if}
-                        <th>Máquina</th>
                         <th>Descrição</th>
                         <th>Status</th>
                         {#if +usrType < 4 && +usrType > 0}
@@ -67,12 +69,12 @@
                         {/if}
                     </tr>
     
-                    <!-- {#each ers as erros}
+                    {#each ers as erros}
+                    {#if erros.isFixed == 0}
                         <tr>
                             {#if +usrType < 4 && +usrType > 0}
                                 <td>{erros.error_id}</td>
                             {/if}
-                            <td>{erros.error_maq}</td>
                             <td>{erros.description}</td>
     
                             {#if erros.isFixed == 0}
@@ -88,14 +90,22 @@
                             {/if}
                             
                         </tr>
-                    {/each} -->
+                    {/if}
+                    {/each}
                 </table>
             </div>
         </section>
-    </section>
+    
+        <a href="./" class="button">Voltar</a>
 </body>
 
-<svelte:head>
-  <title>CIET | Erro {data.eId}</title> <!-- Chamado de maqs por erro inicial meu, mas visto que os erros estão ligados as máquinas não tem muito problema.-->
-  <meta name="description" content="Página de Gerenciamento de Erros das máquinas do CIET.">
+<svelte:head><!-- Chamado de maqs por erro inicial meu, mas visto que os erros estão ligados as máquinas não tem muito problema. -->
+    <!-- {#if erro?.error_id} 
+    <title>CIET | Erro {erro?.error_id}</title> 
+    <meta name="description" content="Página de Gerenciamento de Erros das máquinas do CIET.">
+    {:else} -->
+    <title>CIET | Novo Erro</title> <!-- Chamado de maqs por erro inicial meu, mas visto que os erros estão ligados as máquinas não tem muito problema.-->
+    <meta name="description" content="Página de Gerenciamento de Erros das máquinas do CIET.">   
+    <!-- {/if} -->
+  
 </svelte:head>

@@ -10,7 +10,7 @@
         <input type="text" name="lab_nome" title="Nome do Laboratório" required/><br>
       
         <label for="maq_qt">Quantidade de Máquinas</label>
-        <input type="number" name="maq_qt" title="Quantidade de Máquinas" required/><br>
+        <input type="number" name="maq_qt" title="Quantidade de Máquinas (Sem contar com a máquina do Professor.)" required/><br>
       
         <button>Enviar</button><br>
       
