@@ -60,6 +60,27 @@ export async function load({ cookies }) {
     const prisma = new PrismaClient();
     const labData = await prisma.labs.findMany();
 
+
+    const labErr = await prisma.labs.findMany({
+        include: {
+            _count: {
+                select: {
+                    machines: {
+                        where: {
+                            errors: {
+                                some: {
+                                    isFixed: 0
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        
+    });
+    console.log(labErr)   
+
    /*  const labErrCount = await prisma.labs.findMany({
         include: {
             _count: {
@@ -74,12 +95,14 @@ export async function load({ cookies }) {
         }
     }); */
 
-    
+    const totalErrCount = await prisma.errors.count({
+        where: { isFixed: 0},
+    });    
 
     const typeUsr = cookies.get('userType');
     const idUsr = cookies.get('userID')
 
-    return {typeUsr
+    return {typeUsr, totalErrCount, labErr
         
     }
 }

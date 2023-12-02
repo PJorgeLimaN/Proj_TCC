@@ -4,8 +4,7 @@
 
 <header>
     <nav>
-        <a href="/hub">Página Central</a>       
-        <a href="/reports">Página De Erros</a>
+        <a href="/hub">Página Central</a>
         <a href="/login">Login</a> 
     </nav>
 </header>

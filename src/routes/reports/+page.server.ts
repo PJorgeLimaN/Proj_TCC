@@ -120,6 +120,12 @@ export async function load({ cookies, url }) {
                     },
                 },
             }
+        },
+        orderBy: {
+            machines:{
+                labs:{
+                    lab_id: 'asc',
+            }}
         }
     })
 

@@ -24,7 +24,7 @@
 <body>
 
     <section class="insert"> <!-- Adicionar Novo Erro -->
-        <h1>{machine?.maqName}</h1>
+        <h1>Nome da Máquina: {machine?.maqName}</h1>
         <div>
             <form>
                 <form action="/reports?/createError" method="POST">
@@ -36,7 +36,7 @@
 
                     <div>
                         <label for="maqN">Máquina: </label>
-                        <input type="text" name="maqN" id="maqN" disabled value="{machine?.maqName}">
+                        <input type="text" name="maqN" id="maqN" disabled value="{machine?.maqNum}">
                         <input type="number" name="maqId" hidden value="{machine?.maqId}">
                     </div>
 
@@ -45,16 +45,17 @@
                         <input type="text" name="desc" id="desc" required class="descText">
                     </div>
 
+                    <br><br>
                     <input type="submit" value="Adicionar Erro">
 
-                    <a href="./" class="button">Voltar</a>
+                    <a href="/labs/{machine?.maqLabId}/" class="button">Voltar</a>
                 </form>
             </form>
         </div>
     </section>
 
         <section class="container">
-            <div>
+            <div class="bottom-border">
                 <table>
                     <tr>
                         {#if +usrType < 4 && +usrType > 0}
@@ -94,9 +95,10 @@
                     {/each}
                 </table>
             </div>
+            <a href="/hub/" class="button">Voltar ao Início.</a>
         </section>
     
-        <a href="./" class="button">Voltar</a>
+        
 </body>
 
 <svelte:head><!-- Chamado de maqs por erro inicial meu, mas visto que os erros estão ligados as máquinas não tem muito problema. -->

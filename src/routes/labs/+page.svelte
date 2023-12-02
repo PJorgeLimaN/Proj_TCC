@@ -37,7 +37,9 @@
           </tr>
         {/each}
       </table>
-  
+      <br><br>
+      <a href="/maqs/" class="button">Todas as Máquinas.</a>
+      <br><br>
     <div class="alter">
       
     </div>

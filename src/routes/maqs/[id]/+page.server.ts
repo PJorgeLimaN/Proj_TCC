@@ -7,7 +7,7 @@ export const load = async ({ params: { id } , cookies}) => {
 
     // Refatorar esse código para condizer com as novas tabelas
 
-    console.log(id);
+    //console.log(id);
     const report = await prisma.errors.findMany({
         include: {
             users: {

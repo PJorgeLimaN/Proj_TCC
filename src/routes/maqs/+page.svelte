@@ -33,15 +33,15 @@
     <table>
       <tr>
         <th>ID da Máquina</th>
-        <th>Nome da Máquina</th>
-        <th>Nome do Laboratório</th>
+        <th>Máquina</th>
+        <th>Laboratório</th>
         <th>Quantidade de Erros</th>
       </tr>
 
       {#each machines as maqs}
         <tr>
           <td>{maqs.maqId}</td>
-          <td>{maqs.maqName}</td>
+          <td>{maqs.maqNum}</td>
           <td>{maqs.labs?.lab_name}</td>
           {#if maqs._count.errors > 0}
           <td style="background-color: crimson;">{maqs._count.errors}</td>

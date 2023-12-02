@@ -26,6 +26,7 @@
 	
 	<section class="container">
 		<div>
+			<h1>Selecione a máquina.</h1>
 			<form action="/maqs/{maq}" method="GET">
 				<select name="id" title="Máquina" placeholder="Maquina" bind:value={maq}>
 					{#each maqs as maqs}
