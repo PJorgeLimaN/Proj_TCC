@@ -46,7 +46,7 @@ export const actions = {
             
         })
         
-        console.log(delErr);
+        //console.log(delErr);
 
     },
 

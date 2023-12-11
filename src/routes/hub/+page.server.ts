@@ -58,9 +58,7 @@ export const actions = {
 
 export async function load({ cookies }) {
     const prisma = new PrismaClient();
-    const labData = await prisma.labs.findMany();
-
-
+    
     const labErr = await prisma.labs.findMany({
         include: {
             _count: {
@@ -77,23 +75,11 @@ export async function load({ cookies }) {
                 }
             },
         },
-        
-    });
-    console.log(labErr)   
-
-   /*  const labErrCount = await prisma.labs.findMany({
-        include: {
-            _count: {
-                select: {
-                    errors:{
-                        where: {
-                            isFixed: 0,
-                        }
-                    }
-                }
-            }
+        orderBy: {
+            lab_name: 'asc',
         }
-    }); */
+    });
+   
 
     const totalErrCount = await prisma.errors.count({
         where: { isFixed: 0},

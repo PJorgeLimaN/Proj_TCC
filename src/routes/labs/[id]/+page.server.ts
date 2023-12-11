@@ -26,10 +26,7 @@ export const load = async ({ params: { id } , cookies }) => {
             }
         }
     })
-
     
-    
-
     if(!cookies.get('userType') || !cookies.get('userName')){
         throw redirect(307, `/login/`);
     }

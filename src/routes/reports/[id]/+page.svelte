@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { redirect } from '@sveltejs/kit';
 
-
     export let data;
 
     const usrType = data.typeUsr || 0;
@@ -11,16 +10,30 @@
     const machine = report?.machines;
     const solutions = data.solutions || [];
 
-
 </script>
 
 <body>
     <section class="container">
         <div>
-            <h2>ID do Erro: {report?.error_id}</h2>
-            <h2>Lab: {machine?.labs?.lab_name}</h2>
-            <h2>Máquina: {machine?.maqNum}</h2>
-            <h3>Erro: {report?.description}</h3>
+            <table>
+                <tr>
+                    <th>ID do Erro</th>
+                    <th>Laboratório</th>
+                    <th>Máquina</th>
+                    <th>Erro:</th>
+                    <th>Criado Por</th>
+                    <th>Criado Em</th>
+                </tr>
+
+                <tr>
+                    <td>{report?.error_id}</td>
+                    <td>{machine?.labs?.lab_name}</td>
+                    <td>{machine?.maqNum}</td>
+                    <td>{report?.description}</td>
+                    <td>{report?.users?.user_name}</td>
+                    <td>{report?.create_time.toLocaleString()}</td>
+                </tr>
+            </table>
         </div>
 
         {#if report?.isFixed == 0}
@@ -62,7 +75,7 @@
                         <td>{sol.sol_err}</td>
                         <td>{sol.users.user_name}</td>
                         <td>{sol.sol_desc}</td>
-                        <td>{sol.sol_date}</td>
+                        <td>{sol.sol_date?.toLocaleString()}</td>
                     </tr>
                 {/each}
             </tabe>
@@ -72,8 +85,6 @@
             <a href="./" class="button">Voltar</a>
         </div>
     </section>
-
-
     
 </body>
 

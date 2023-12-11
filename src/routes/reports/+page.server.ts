@@ -32,6 +32,10 @@ export const actions = {
                 user_id: +usr,
             }
         })
+
+        return {
+            message: "Adicionado com Sucesso."
+        }
     },
 
 
@@ -67,10 +71,17 @@ export const actions = {
             });
         };
 
+        return {
+            message: "Adicionado com Sucesso."
+        }
+
     },
 
     deleteSolution: async (event) => {
         const data = await event.request.formData();
+
+        //Não implementada
+        //Não Completa
     }
 
     /* Criar Solução
@@ -82,7 +93,8 @@ export const actions = {
         Automaticamente após criar a solução atualizar a condição do erro para "Resolvido(1)"
 
         Fase 2
-        Criar uma tabela que adiciona erros unicos e suas resoluções, para facilitar adição de novos erros e busca de soluções
+        Criar uma tabela que mostra erros unicos e suas resoluções, para facilitar adição de novos erros e busca de soluções
+        (Completo)
     */
 }satisfies Actions;
 
@@ -105,7 +117,7 @@ export async function load({ cookies, url }) {
             machines: true,
         },
         orderBy: {
-            lab_id: 'asc',
+            lab_name: 'asc',
         }
     })
 
@@ -117,8 +129,13 @@ export async function load({ cookies, url }) {
                         select: {
                             lab_name: true,
                         }, 
-                    },
+                    }, 
                 },
+            },
+            users: {
+                select: {
+                    user_name: true,
+                }
             }
         },
         orderBy: {

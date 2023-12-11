@@ -15,7 +15,7 @@
         alert(message)
         {/if}
 
-        <h2>Bem-Vindo ao Sistema de Manutenção de Máquinas dos Laboratórios do CIET</h2>
+        <h2>Bem-Vindo ao Sistema de Gerenciamento de Erros do CIET</h2>
         <section class="container">
             {#if form?.message}
                 <h2 class="error">{form?.message}</h2>  

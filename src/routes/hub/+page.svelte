@@ -75,11 +75,19 @@
         <td>{labs.lab_name}</td>
         <td>{labs.maqs}</td>
         <td>{labs._count.machines}</td>
+        <td><a href="/labs/{labs.lab_id}" class="button">Ver Laboratório</a></td>
       </tr>
         
       {/each}
       
     </table> 
+  </section>
+
+  {:else}
+  <section class="container">
+    <div>
+      <h1>Bem-Vindo ao Sistema de Gerenciamento de Erros do CIET</h1>
+    </div>
   </section>
   
 

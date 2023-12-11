@@ -2,10 +2,17 @@
   
   import { error } from '@sveltejs/kit';
   import { linear } from 'svelte/easing';
+// Forma geral de todos os dados que chegam na página 
+//let é basicamente um var, que não pode ser redeclarado, a menos que dentro de um bloco {}, como um if ou iguais.
 
-    export let data; // Forma geral de todos os dados que chegam na página //let é basicamente um var, que não pode ser redeclarado, a menos que dentro de um bloco {}, como um if ou iguais.
+    export let data; 
     export let form;
     
+    const usrType = data.typeUsr || 0;
+    const usrName = data.nameUsr || "";
+    const usrId = data.idUsr || 0;
+    const machines = data.machines;
+
     /* 
     Quando possível, adicionar uma maneira de enviar junto com todos os dados, o nome do usuário que realizou o cadastro do erro (FEITO)
     Se possível, encontrar uma forma de pegar o nome do usuário no computador, ou o nome da máquina, para maior facilidade de impedir ou punir aqueles que decidirem adicionar diversos erros de uma só vez
@@ -13,10 +20,7 @@
     
     
     
-    const usrType = data.typeUsr || 0;
-    const usrName = data.nameUsr || "";
-    const usrId = data.idUsr || 0;
-    const machines = data.machines;
+    
     
     
 </script>
@@ -32,7 +36,9 @@
   <div class="divIn">
     <table>
       <tr>
+        {#if +usrType > 0 && +usrType < 3}
         <th>ID da Máquina</th>
+        {/if}
         <th>Máquina</th>
         <th>Laboratório</th>
         <th>Quantidade de Erros</th>
@@ -40,7 +46,10 @@
 
       {#each machines as maqs}
         <tr>
+          {#if +usrType > 0 && +usrType < 3}
           <td>{maqs.maqId}</td>
+          {/if}
+
           <td>{maqs.maqNum}</td>
           <td>{maqs.labs?.lab_name}</td>
           {#if maqs._count.errors > 0}
@@ -50,7 +59,6 @@
           {/if}
           <td><a href="/maqs/{maqs.maqId}" class="button">Mais Informações</a></td>
         </tr>
-
       {/each}
     </table>
   </div>

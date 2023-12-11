@@ -55,39 +55,35 @@
     </section>
 
         <section class="container">
+            <h1>Erros Não Resolvidos</h1>
             <div class="bottom-border">
                 <table>
                     <tr>
-                        {#if +usrType < 4 && +usrType > 0}
+                        {#if +usrType < 3 && +usrType > 0}
                             <th>ID do Erro</th>
                         {/if}
                         <th>Descrição</th>
                         <th>Status</th>
-                        {#if +usrType < 4 && +usrType > 0}
+                        {#if +usrType < 3 && +usrType > 0}
                             <th>Criado por</th>
                             <th>Criado</th>
-                            <th>Editado</th>
                         {/if}
                     </tr>
     
                     {#each ers as erros}
                     {#if erros.isFixed == 0}
                         <tr>
-                            {#if +usrType < 4 && +usrType > 0}
+                            {#if +usrType < 3 && +usrType > 0}
                                 <td>{erros.error_id}</td>
                             {/if}
-                            <td>{erros.description}</td>
+
+                            <td>{erros.description}</td>                                
+                            <td>Não Resolvido</td>
     
-                            {#if erros.isFixed == 0}
-                                <td>Não Resolvido</td>
-                            {:else if erros.isFixed == 1}
-                                <td>Resolvido</td>
-                            {/if}
-    
-                            {#if +usrType < 4 && +usrType > 0}
+                            {#if +usrType < 3 && +usrType > 0}
                                 <td>{erros.users.user_name}</td>
                                 <td>{erros.create_time.toLocaleString()}</td>
-                                <td>{erros.modified_time?.toLocaleString()}</td>
+                                <td><a href="/reports/{erros.error_id}" class="button">Resolver Erro</a></td>
                             {/if}
                             
                         </tr>
@@ -95,6 +91,35 @@
                     {/each}
                 </table>
             </div>
+
+            {#if +usrType < 3 && +usrType > 0}
+            <div class="bottom-border">
+                <h1>Erros Resolvidos</h1>
+                <table>
+                    <tr>
+                        <th>ID do Erro</th>                        
+                        <th>Descrição</th>
+                        <th>Status</th>
+                        <th>Criado por</th>
+                        <th>Criado</th>
+                    </tr>
+    
+                    {#each ers as erros}
+                    {#if erros.isFixed == 1}
+                        <tr>
+                            <td>{erros.error_id}</td>
+                            <td>{erros.description}</td>                                
+                            <td>Resolvido</td>
+                            <td>{erros.users.user_name}</td>
+                            <td>{erros.create_time.toLocaleString()}</td>
+                            <td><a href="/reports/{erros.error_id}" class="button">Soluções</a></td>
+                        </tr>
+                    {/if}
+                    {/each}
+                </table>
+            </div>
+            {/if}
+
             <a href="/hub/" class="button">Voltar ao Início.</a>
         </section>
     

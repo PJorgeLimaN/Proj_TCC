@@ -4,6 +4,7 @@
     import {Prisma, PrismaClient} from '@prisma/client'
 
     export let data; // Forma geral de todos os dados que chegam na página //let é basicamente um var, que não pode ser redeclarado, a menos que dentro de um bloco {}, como um if ou iguais.
+    export let form;
 
 
     let labs = data.labs;
@@ -16,6 +17,13 @@
 </script>
 
 <body>
+    {#if form?.message}
+    <section class="container">
+        <div>
+            <h2>{form?.message}</h2>
+        </div>
+    </section>
+    {/if}
     <section class="container">
         <form action="/labs/{lab}" method="GET">
             <div class="bottom-border">
@@ -47,12 +55,14 @@
         <div class="bottom-border">
             <h1>Erros Existentes</h1>
             <table>
+                
                 <tr>
                     <th>Laboratório</th>
                     <th>Máquina</th>
                     <th>Erro</th>
                     {#if +usr > 0 && +usr < 4}
                     <th>Situação</th>
+                    <th>Adicionado Por</th>
                     {/if}
                 </tr>
 
@@ -63,12 +73,11 @@
                         <td>{err.machines.maqNum}</td>
                         <td>{err.description}</td>
                         {#if +usr > 0 && +usr < 4}
-                            {#if err.isFixed == 0}
                             <td>Não Resolvido</td>
-                            {/if}
-                            {#if +usr > 0 && +usr < 3}
+                            <td>{err.users.user_name}</td>
+                            {#if +usr > 0 && +usr < 3}                            
                             <td class="butTD"> <a href="/reports/{err.error_id}" class="button">Soluções</a></td>
-                            <td class="butTD"> <a href="/reports/{err.error_id}" class="button">Deletar Erro</a></td>
+                            <!-- <td class="butTD"> <a href="/reports/{err.error_id}" class="button">Deletar Erro</a></td> -->
                             {/if}
                         {/if}
                     </tr>
@@ -88,6 +97,7 @@
                     <th>Erro</th>
                     {#if +usr > 0 && +usr < 4}
                     <th>Situação</th>
+                    <th>Adicionado Por</th>
                     {/if}
                 </tr>
 
@@ -99,9 +109,10 @@
                         <td>{err.description}</td>
                         {#if +usr > 0 && +usr < 4}
                             <td>Resolvido</td>
+                            <td>{err.users.user_name}</td>
                             {#if +usr > 0 && +usr < 3}
                             <td class="butTD"> <a href="/reports/{err.error_id}" class="button">Soluções</a></td>
-                            <td class="butTD"> <a href="/reports/{err.error_id}" class="button">Deletar Erro</a></td>
+                            <!-- <td class="butTD"> <a href="/reports/{err.error_id}" class="button">Deletar Erro</a></td> -->
                             {/if}
                         {/if}
                     </tr>

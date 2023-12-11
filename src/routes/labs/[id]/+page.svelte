@@ -26,6 +26,7 @@
 	
 	<section class="container">
 		<div>
+			<h1>Laboratório {labs?.lab_name}</h1>
 			<h1>Selecione a máquina.</h1>
 			<form action="/maqs/{maq}" method="GET">
 				<select name="id" title="Máquina" placeholder="Maquina" bind:value={maq}>
@@ -40,7 +41,9 @@
 	</section>
 
 	{#if +usrType > 0 && +usrType < 4 }
+	<!-- {#if +usrType > 0 && +usrType < 3 }
 	<section class="container">
+		// NAO EXISTE MUDANÇA AO EDITAR UM LABORATÓRIO, LOGO, ESSA PARTE DO CÓDIGO PARA EDIÇÃO DE MÁQUINAS FOI REMOVIDA.
 		<div>
 			<form>
 				<form action="/labs?/updateLab" method="post">
@@ -56,7 +59,7 @@
 
 					<div>
 						<label for="maqs">Quantidade de Máquinas</label>
-						<input type="number" name="maqs" id="maqs" value={labs?.maqs} />
+						<input type="number" name="maqs" id="maqs" value={labs?.maqs} readonly/>
 					</div>
 
 					<input type="submit" value="Atualizar" />
@@ -66,6 +69,7 @@
 			</form>
 		</div>
 	</section>
+	{/if} -->
 
 	<section class="container">
 		<div>
@@ -75,11 +79,8 @@
 						<th>ID da Máquina</th>
 					{/if}
 					<th>Máquina</th>
-					<th>Quantidade de Erros?</th>
-					{#if +usrType < 4 && +usrType > 0}
-						<th>Criado</th>
-						<th>Editado</th>
-					{/if}
+					<th>Quantidade de Erros</th>
+					<th></th>
 				</tr>
 
 				{#each maqs as maq}
@@ -89,12 +90,14 @@
 						{/if}
 						
 						<td>{maq.maqNum}</td>
-						<td>{maq._count.errors}</td>
 
-						{#if +usrType < 4 && +usrType > 0}
-							<td>Talvez</td>
-							<td>Talvez</td>
-						{/if}
+						{#if maq._count.errors > 0}
+          				<td style="background-color: crimson;">{maq._count.errors}</td>
+          				{:else}
+          				<td>{maq._count.errors}</td>
+          				{/if}
+
+						<td><a href="/maqs/{maq.maqId}" class="button">Ver Máquina</a></td>
 						<!-- {@debug error} -->
 					</tr>
 				{/each}
