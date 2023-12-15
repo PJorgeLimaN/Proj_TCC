@@ -71,6 +71,7 @@ a{
 
   .show-labs{
     margin: auto;
+    text-align: center;
     width: 50%;
     border: 3px solid black;
     padding: 10px;
@@ -117,6 +118,19 @@ a{
     text-align: center;
   }
 
+  .info {
+    margin: auto;
+    width: 50%;
+    border: 3px solid black;
+    padding: 10px;
+  }
+
+  .bottom-border {
+    
+    border-bottom: solid 3px black;
+    
+  }
+
 
 
   table, th, td {
@@ -124,11 +138,18 @@ a{
   }
 
   th, td {
-    border: 3px;
-    border-style: solid;
+    border: 3px solid darkgray;
+    border-radius: 5%;
     border-collapse: collapse;
     border-spacing: 5px;
     padding: 2px 2px 3px 3px;
   }
 
   td:hover {background-color: #D6EEEE;}
+
+  * {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+
+  

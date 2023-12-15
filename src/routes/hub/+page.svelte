@@ -1,8 +1,13 @@
 <script lang="ts">
   export let data;
+  export let form;
 
-  const labsData = data.labErrCount;
+  /* const labsData = data.labErrCount; */
   const usrType = data.typeUsr || 0;
+  const count = data.totalErrCount;
+  const labsCount = data.labErr;
+
+  
 
   /* 
   Decidir se o hub será clicável (Provavelmente terá de ser feito um teste para ver se o usuário está logado ou não para poder escolher laboratórios específicos) ou se ficará somente para amostra inicial.
@@ -19,7 +24,7 @@
       {#if (+usrType > 0) && (+usrType < 4) }
         <a href="./labs">Laboratórios</a>
       {/if}
-        <a href="./maqs">Máquinas</a>
+        <a href="./reports">Erros</a>
     {/if}
     {#if +usrType == 0}
       <a href="./login">Favor Realizar Login</a>
@@ -29,27 +34,64 @@
 
 <body>
 
-  <table class="hubTable">
-    
-    <th>Laboratório</th>
-    <th>Máquinas</th>
-    <th>Erros</th>
+  <section class="container">
+  {#if form?.message}
+    <h2>{form?.message}</h2>
+  {:else if form?.sucess}
+    <h2>{form?.sucess} Favor recarregar a página.</h2>
+  {/if}
+  </section>      
 
-    {#each labsData as labs}
+  {#if +usrType == 4 || +usrType == 3}
+  <section class="container">
+    <div>
+      <h3>Instruções</h3>
+      <p>Leia todas as instruções, e aperte o botão Erro acima para prosseguir.</p>
+      <p>Selecione em qual laboratório se encontra o erro, se não souber em que lab está, pergunte ao professor ou veja na placa do lado de fora.</p>
+      <p>Na próxima página, informe o número da máquina em questão, deve haver uma folha dizendo qual a máquina ao lado do computador.</p>
+      <p>Na página final, descreva qual o erro, com a maior quantidade de detalhes que puder. Se o computador der algum código ou linha explicando qual o erro, escreva a linha inteira.</p>
+      <p>Se for um erro que necessita ser resolvido imediatamente, desça na oficina e avise aos bolsistas.</p><br>
+      <p>Se o erro que encontrou já estiver na lista, no laboratório e máquina corretos, favor não adicionar novamente.</p>
+      <p></p>
+    </div>
+  </section>
 
-    <tr>
-      <td>{labs.lab_name}</td>
-      <td>{labs.maqs}</td>
-      <td>{labs._count.errors}</td>
-    </tr>
+  {:else if +usrType > 0 && +usrType < 3}
+  <section class="container">
+    <div>
+      <h2>Sistema de Gerenciamento de Erros CIET</h2>
+      <h3>Existem {count} erros não resolvidos no momento.</h3>
+    </div>
+
+    <table class="hubTable">    
       
-    {/each}
-    
+      <th>Laboratório</th>
+      <th>Máquinas</th>
+      <th>Erros</th>
+  
+      {#each labsCount as labs}
+  
+      <tr>
+        <td>{labs.lab_name}</td>
+        <td>{labs.maqs}</td>
+        <td>{labs._count.machines}</td>
+        <td><a href="/labs/{labs.lab_id}" class="button">Ver Laboratório</a></td>
+      </tr>
+        
+      {/each}
+      
+    </table> 
+  </section>
 
+  {:else}
+  <section class="container">
+    <div>
+      <h1>Bem-Vindo ao Sistema de Gerenciamento de Erros do CIET</h1>
+    </div>
+  </section>
+  
 
-  </table>
-
-
+  {/if}
   <!-- 
     Mostrar Lista de laboratórios 
    -->

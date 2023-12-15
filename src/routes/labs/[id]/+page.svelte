@@ -6,8 +6,13 @@
 	const usrType = data.typeUsr || 0;
 	const usrName = data.nameUsr || '';
 	const usrId = data.idUsr || 0;
+	
+	
     const labs = data.lab;
-	const ers = data.lab?.errors || [];
+	const maqs = data.maqs || [];
+
+	let maq = '';
+	
     
 	/* Possibilidades:
     Como é uma tela para editar um laboratório, pode também ser utilizada como tela para ver um laboratório específico e os erros pertinentes somente aquele laboratório
@@ -18,7 +23,27 @@
 </script>
 
 <body>
+	
 	<section class="container">
+		<div>
+			<h1>Laboratório {labs?.lab_name}</h1>
+			<h1>Selecione a máquina.</h1>
+			<form action="/maqs/{maq}" method="GET">
+				<select name="id" title="Máquina" placeholder="Maquina" bind:value={maq}>
+					{#each maqs as maqs}
+						<option value={maqs.maqId}>{maqs.maqNum}</option>	
+					{/each}
+				</select>
+
+				<input type="submit" value="Selecionar Máquina">
+			</form>
+		</div>
+	</section>
+
+	{#if +usrType > 0 && +usrType < 4 }
+	<!-- {#if +usrType > 0 && +usrType < 3 }
+	<section class="container">
+		// NAO EXISTE MUDANÇA AO EDITAR UM LABORATÓRIO, LOGO, ESSA PARTE DO CÓDIGO PARA EDIÇÃO DE MÁQUINAS FOI REMOVIDA.
 		<div>
 			<form>
 				<form action="/labs?/updateLab" method="post">
@@ -34,7 +59,7 @@
 
 					<div>
 						<label for="maqs">Quantidade de Máquinas</label>
-						<input type="number" name="maqs" id="maqs" value={labs?.maqs} />
+						<input type="number" name="maqs" id="maqs" value={labs?.maqs} readonly/>
 					</div>
 
 					<input type="submit" value="Atualizar" />
@@ -44,49 +69,48 @@
 			</form>
 		</div>
 	</section>
+	{/if} -->
 
 	<section class="container">
 		<div>
 			<table>
 				<tr>
 					{#if +usrType < 4 && +usrType > 0}
-						<th>ID do Erro</th>
+						<th>ID da Máquina</th>
 					{/if}
 					<th>Máquina</th>
-					<th>Descrição</th>
-					<th>Status</th>
-					{#if +usrType < 4 && +usrType > 0}
-						<th>Criado por</th>
-						<th>Criado</th>
-						<th>Editado</th>
-					{/if}
+					<th>Quantidade de Erros</th>
+					<th></th>
 				</tr>
 
-				{#each ers as erros}
+				{#each maqs as maq}
 					<tr>
 						{#if +usrType < 4 && +usrType > 0}
-							<td>{erros.error_id}</td>
+							<td>{maq.maqId}</td>
 						{/if}
-						<td>{erros.error_maq}</td>
-						<td>{erros.description}</td>
+						
+						<td>{maq.maqNum}</td>
 
-						{#if erros.isFixed == 0}
-							<td>Não Resolvido</td>
-						{:else if erros.isFixed == 1}
-							<td>Resolvido</td>
-						{/if}
+						{#if maq._count.errors > 0}
+          				<td style="background-color: crimson;">{maq._count.errors}</td>
+          				{:else}
+          				<td>{maq._count.errors}</td>
+          				{/if}
 
-						{#if +usrType < 4 && +usrType > 0}
-							<td>{erros.users.user_name}</td>
-							<td>{erros.create_time.toLocaleString()}</td>
-							<td>{erros.modified_time?.toLocaleString()}</td>
-						{/if}
+						<td><a href="/maqs/{maq.maqId}" class="button">Ver Máquina</a></td>
 						<!-- {@debug error} -->
 					</tr>
 				{/each}
 			</table>
 		</div>
+		<a href="./" class="button">Voltar</a>
 	</section>
+	{/if}
+
+	<form>
+
+	</form>
+	
 </body>
 
 <svelte:head>

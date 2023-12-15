@@ -27,9 +27,55 @@ export const actions = {
         const labs = await prisma.labs.create({
             data : {
                 lab_name: name.toString(),
-                maqs: +maq,
+                maqs: +maq + 1,
+            }
+        });
+
+        const lab = await prisma.labs.findFirst({
+            select : {
+                lab_id: true,
+                lab_name: true,
+            }, where : {
+                lab_name: name.toString(),
             }
         })
+
+        if(!lab) return;
+
+        for(var i = 1; i <= +maq; i++){
+            let num = '';
+            let name = lab?.lab_name || '';
+
+            if(i < 10){
+                num = '0'+i;
+            }else{
+                num = ''+i;
+            }
+
+            if(name?.length > 3){
+                name = name?.slice(0, 3);
+            }
+
+            if(i == 1){
+                const labP = await prisma.machines.create({
+                    data : {
+                        maqLabId: lab?.lab_id,
+                        maqName: 'Lab'+name+'MaqProf',
+                        maqNum: 'Prof',
+                    }
+                })
+            }
+
+            const labs = await prisma.machines.create({
+                data : {
+                    maqLabId: lab?.lab_id,
+                    maqName: 'Lab'+name+'Maq'+num,
+                    maqNum: num,
+                }
+            })
+        }
+        
+        
     },
 
     updateLab: async (event) => {
@@ -69,7 +115,7 @@ export const actions = {
 
 export async function load({ cookies, url}) {
     const prisma = new PrismaClient();
-    const errData = await prisma.errors.findMany({include:{labs:true}});
+    
     const labData = await prisma.labs.findMany();
 
     if(!cookies.get('userType') || !cookies.get('userName')){
@@ -80,7 +126,7 @@ export async function load({ cookies, url}) {
         const nameUsr = cookies.get('userName');
         const idUsr = cookies.get('userId');
 
-    return {errData, labData, typeUsr, nameUsr, idUsr
+    return {labData, typeUsr, nameUsr, idUsr
         
     }
 }

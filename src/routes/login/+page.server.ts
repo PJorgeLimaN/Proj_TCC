@@ -10,7 +10,7 @@ export const actions = {
         const data = await request.formData();
 
         let message = "All Quiet";
-        console.log(data);
+        //console.log(data);
         
         const usr = data.get("username");
         const pass = data.get("password");
@@ -39,7 +39,7 @@ export const actions = {
             }
         }else if(usData.user_pass != pass){
             return{
-                message: "Senha Incorreta."
+                message: "Senha Incorreta.",
             }
         };
 
@@ -50,6 +50,10 @@ export const actions = {
         if(cookies.get('userType') && cookies.get('userName')){
             throw redirect(307, `/hub/`);
         }
+
+        return{
+            sucess: "Usuário Autenticado.",
+        }
     },
     
     
@@ -58,6 +62,6 @@ export const actions = {
 
 export async function load({cookies}) {
     if(cookies.get('userType') && cookies.get('userName')){
-        throw redirect(307, `/hub/`);
+        throw redirect(307, `/hub`);
     }
 }

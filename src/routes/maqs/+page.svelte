@@ -2,128 +2,77 @@
   
   import { error } from '@sveltejs/kit';
   import { linear } from 'svelte/easing';
+// Forma geral de todos os dados que chegam na página 
+//let é basicamente um var, que não pode ser redeclarado, a menos que dentro de um bloco {}, como um if ou iguais.
 
-    export let data; // Forma geral de todos os dados que chegam na página //let é basicamente um var, que não pode ser redeclarado, a menos que dentro de um bloco {}, como um if ou iguais.
+    export let data; 
     export let form;
     
-    /* 
-    Quando possível, adicionar uma maneira de enviar junto com todos os dados, o nome do usuário que realizou o cadastro do erro
-    Se possível, encontrar uma forma de pegar o nome do usuário no computador, ou o nome da máquina, para maior facilidade de impedir ou punir aqueles que decidirem adicionar diversos erros de uma só vez
-    */
-    
-    const errD = data.errData; // Escolhendo especificamente uma parte dos dados enviados a pagina
-    const labD = data.labData;
     const usrType = data.typeUsr || 0;
     const usrName = data.nameUsr || "";
     const usrId = data.idUsr || 0;
+    const machines = data.machines;
+
+    /* 
+    Quando possível, adicionar uma maneira de enviar junto com todos os dados, o nome do usuário que realizou o cadastro do erro (FEITO)
+    Se possível, encontrar uma forma de pegar o nome do usuário no computador, ou o nome da máquina, para maior facilidade de impedir ou punir aqueles que decidirem adicionar diversos erros de uma só vez
+    */
+    
+    
+    
+    
     
     
 </script>
 
 <body>
 
-<section class="insert">
+<section class="container">
 
   {#if form?.message}
     <h2 class="error">{form?.message}</h2>  
   {/if}
 
   <div class="divIn">
-    <form method="post" action="/maqs?/addErr">
-      <div>
-        <label for="lab_id">Laboratório</label>
-        <select name="lab_id" title="laboratório" placeholder="Lab">
-          <!-- {#each data.labData as labs} -->
-          {#each labD as labs}
-            <option value="{labs.lab_id}">{labs.lab_name} ({labs.maqs})</option> <!-- Por enquanto essa é a melhor maneira de mostrar a quantidade total de máquinas em um laboratório -->
-          {/each}
-        </select>
-        <!-- Encontrar uma maneira de dar Bind no valor escolhido e o valor máximo do Laboratório -->
-      </div>
+    <table>
+      <tr>
+        {#if +usrType > 0 && +usrType < 3}
+        <th>ID da Máquina</th>
+        {/if}
+        <th>Máquina</th>
+        <th>Laboratório</th>
+        <th>Quantidade de Erros</th>
+      </tr>
 
-      <!-- {@debug selLab} -->
-      
-      <div>
-        <label for="maq_id">Máquina</label>
-        <input type="number" name="maq_id" title="Máquina" required min="1" max="100" value="1"/><br>
-      </div>
+      {#each machines as maqs}
+        <tr>
+          {#if +usrType > 0 && +usrType < 3}
+          <td>{maqs.maqId}</td>
+          {/if}
 
-      <div>
-        <label for="error">Descrição do Erro</label>
-        <input type="text" name="error" title="Descrição" required size="100" placeholder="Teclado Não Funciona"/><br>
-      </div>
-
-      <input type="number" name="user_id" value="{usrId}" hidden>
-      <button>Enviar</button><br>
-
-    </form>
+          <td>{maqs.maqNum}</td>
+          <td>{maqs.labs?.lab_name}</td>
+          {#if maqs._count.errors > 0}
+          <td style="background-color: crimson;">{maqs._count.errors}</td>
+          {:else}
+          <td>{maqs._count.errors}</td>
+          {/if}
+          <td><a href="/maqs/{maqs.maqId}" class="button">Mais Informações</a></td>
+        </tr>
+      {/each}
+    </table>
   </div>
-
+  <a href="./" class="button">Voltar</a>
 </section>
 
 <br>
 
-<section class="show-error">
-  
-  <table>
-    <tr>
-        {#if (+usrType < 4) && (+usrType > 0)}
-      <th>ID do Erro</th>
-        {/if}
-      <th>Laboratório</th>
-      <th>Máquina</th>
-      <th>Descrição</th>
-      <th>Status</th>
-        {#if (+usrType < 4) && (+usrType > 0)}
-      <th>Criado por</th>
-      <th>Criado</th>
-      <th>Editado</th>
-        {/if}
-    </tr>
-    
-    {#each errD as error}
-    
-      <tr>
-          {#if (+usrType < 4) && (+usrType > 0)}
-        <td>{error.error_id}</td>
-          {/if}
-        <td>{error.labs.lab_name}</td>
-        <td>{error.error_maq}</td>
-        <td>{error.description}</td>
-        
-        {#if error.isFixed == 0}
-        <td>Não Resolvido</td>
-        {:else if error.isFixed == 1}
-        <td>Resolvido</td>
-        {/if}
-        
-          {#if (+usrType < 4) && (+usrType > 0)}
-        <td>{error.users.user_name}</td>
-        <td>{error.create_time.toLocaleString()}</td>
-        <td>{error.modified_time?.toLocaleString()}</td>
-        <td>
-            <form method="POST" action="/maqs?/deleteEntry">
-              <input type="hidden" name="id" value={error.error_id} />
-              <button>Remover</button>
-            </form>
-        </td>
-        <td>
-            <a href="/maqs/{error.error_id}" class="button">Editar</a>
-        </td>
-          {/if}
-        <!-- {@debug error} -->
-        
-      </tr>
-    
-    {/each}
-  </table>
 
-</section>
 
 </body>
 
 <svelte:head>
-  <title>CIET | Erros</title> <!-- Chamado de maqs por erro inicial meu, mas visto que os erros estão ligados as máquinas não tem muito problema.-->
+  <title>CIET | Máquinas</title> <!-- Chamado de maqs por erro inicial meu, mas visto que os erros estão ligados as máquinas não tem muito problema.-->
   <meta name="description" content="Página de Gerenciamento de Erros das máquinas do CIET.">
 </svelte:head>
 

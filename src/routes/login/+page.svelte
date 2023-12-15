@@ -15,13 +15,15 @@
         alert(message)
         {/if}
 
-        <h2>Bem-Vindo ao Sistema de Manutenção de Máquinas dos Laboratórios do CIET</h2>
+        <h2>Bem-Vindo ao Sistema de Gerenciamento de Erros do CIET</h2>
         <section class="container">
             {#if form?.message}
-              <h2 class="error">{form?.message}</h2>  
+                <h2 class="error">{form?.message}</h2>  
+            {:else if form?.sucess}
+                <h2 class="sucess">{form?.sucess}</h2>
             {/if}
           
-            <form method="POST" action="?/logIn">
+            <form method="POST" action="./hub?/logIn">
           
               <div>
                   <label for="username">Usuário</label> <br>
@@ -44,6 +46,7 @@
           </form> -->
           
           </section>
+          <a href="./" class="button">Voltar</a>
     </section>
 
 </body>
